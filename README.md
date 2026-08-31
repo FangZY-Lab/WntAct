@@ -91,11 +91,6 @@ Part of the code involves the core interests of the laboratory and is not open
 source at this time; the corresponding sections are clearly marked at the top
 of each script.
 
-## Citation
-
-Zhao *et al.* Robustly quantifying Wnt/β-catenin pathway activity by
-integrating genomic data: a context-insensitive and directional approach for
-precision oncology. *In Submission*.
 
 ## Author
 
