@@ -1,16 +1,13 @@
-#Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
-
 # ==============================================================================
 # WntAct4 -- Deep pan-cancer explorations
 # ------------------------------------------------------------------------------
-# Purpose:    Pan-cancer subtyping by k-means clustering of Wnt activity scores
-#             and deep multi-omic characterization of the resulting subtypes.
+# Purpose:    Pan-cancer subtyping by k-means clustering of Wnt activity scores and deep multi-omic characterization of the resulting subtypes.
 # Inputs:     Pan-cancer Wnt activity scores and group annotations.
 # Outputs:    Subtype assignments and downstream comparative analyses.
+# NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.
 # ==============================================================================
 
 
-################################################################################TCGA pan-cancer typing matrix####
 rm(list=ls())
 gc()
 setwd("input")
@@ -109,7 +106,9 @@ p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
 print(p)
 pancancer_cluster=cluster
 save(pancancer_cluster,file="pancancer_cluster.Rdata")
-################################################################################TARGET pan-cancer typing matrix####
+# ------------------------------------------------------------------------------
+# TARGET pan-cancer typing matrix
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -208,7 +207,9 @@ p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
 print(p)
 TARGET_cluster=cluster
 save(TARGET_cluster,file="TARGET_cluster.Rdata")
-################################################################################TARGET+TCGA cumulative bar chart####
+# ------------------------------------------------------------------------------
+# TARGET+TCGA cumulative bar chart
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -240,7 +241,9 @@ ggplot(df_percent, aes(x = project, y = percent, fill = cluster)) +
     legend.position = "right",
     plot.title = element_text(hjust = 0.5)
   )
-################################################################################Expression of the AXIN2 gene in a new typology of TCGA####
+# ------------------------------------------------------------------------------
+# Expression of the AXIN2 gene in a new typology of TCGA
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(reshape2)
@@ -293,7 +296,9 @@ p=ggplot(WNT, aes(x = cluster, y = AXIN2, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
   ggtitle("TCGA-Pancancer")  
 print(p)
-################################################################################Expression of the AXIN2 gene in a new typology of TARGET####
+# ------------------------------------------------------------------------------
+# Expression of the AXIN2 gene in a new typology of TARGET
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(reshape2)
@@ -346,7 +351,9 @@ p=ggplot(WNT, aes(x = cluster, y = AXIN2, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
   ggtitle("TARGET-Pancancer")  
 print(p)
-################################################################################TCGA-OS####
+# ------------------------------------------------------------------------------
+# TCGA-OS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -397,7 +404,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-################################################################################TARGET-OS####
+# ------------------------------------------------------------------------------
+# TARGET-OS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -466,7 +475,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-################################################################################DSS####
+# ------------------------------------------------------------------------------
+# DSS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -517,7 +528,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-################################################################################DFI####
+# ------------------------------------------------------------------------------
+# DFI
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -568,7 +581,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) + 
   theme(text = element_text(size = 16))
 print(p)
-################################################################################PFI####
+# ------------------------------------------------------------------------------
+# PFI
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -619,7 +634,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-################################################################################TCGA-age####
+# ------------------------------------------------------------------------------
+# TCGA-age
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -705,7 +722,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-gender####
+# ------------------------------------------------------------------------------
+# TCGA-gender
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -780,7 +799,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)  
-################################################################################TCGA-race####
+# ------------------------------------------------------------------------------
+# TCGA-race
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -862,7 +883,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = race)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-stage####
+# ------------------------------------------------------------------------------
+# TCGA-stage
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -949,7 +972,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = stage)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-grade####
+# ------------------------------------------------------------------------------
+# TCGA-grade
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1027,7 +1052,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = grade)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################TCGA-status####
+# ------------------------------------------------------------------------------
+# TCGA-status
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1104,7 +1131,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = tumor_status)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-outcome####
+# ------------------------------------------------------------------------------
+# TCGA-outcome
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1183,7 +1212,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = outcome)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-margin####
+# ------------------------------------------------------------------------------
+# TCGA-margin
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1260,7 +1291,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = margin)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-residual####
+# ------------------------------------------------------------------------------
+# TCGA-residual
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1337,7 +1370,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = residual)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA-mutation####
+# ------------------------------------------------------------------------------
+# TCGA-mutation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1420,7 +1455,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = gene)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################Protein labelling standardisation####
+# ------------------------------------------------------------------------------
+# Protein labelling standardisation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1471,7 +1508,9 @@ protein_names=c(
 )
 protein_tag=data.frame(Tag=unique(protein_data$protein),Names=protein_names)
 save(protein_tag,file="protein_tag.Rdata")
-################################################################################Expression of β-catenin protein####
+# ------------------------------------------------------------------------------
+# Expression of β-catenin protein
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1519,7 +1558,9 @@ p=ggplot(WNT, aes(x = cluster, y = BETACATENIN, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
   ggtitle("TCGA-Pancancer")  
 print(p)
-################################################################################Protein differential expression####
+# ------------------------------------------------------------------------------
+# Protein differential expression
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1537,7 +1578,9 @@ load("input/pancancer_cluster.Rdata")
 protein_data=read.delim("TCGA-RPPA-pancan-clean.xena",check.names = F)
 rownames(protein_data)=protein_data[,1]
 protein_data=protein_data[,-1]
-###############panWSS1 vs. Other
+# ------------------------------------------------------------------------------
+# panWSS1 vs. Other
+# ------------------------------------------------------------------------------
 pancancer_cluster_G=pancancer_cluster
 pancancer_cluster_G$cluster=ifelse(pancancer_cluster_G$cluster=="panWSS1","panWSS1","Other")
 sample=intersect(pancancer_cluster_G$Tag,colnames(protein_data))
@@ -1623,7 +1666,9 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     nudge_y = 0.2
   )+ggtitle("panWSS1")
 print(volcano_p)
-###############panWSS2 vs. Other
+# ------------------------------------------------------------------------------
+# panWSS2 vs. Other
+# ------------------------------------------------------------------------------
 pancancer_cluster_G=pancancer_cluster
 pancancer_cluster_G$cluster=ifelse(pancancer_cluster_G$cluster=="panWSS2","panWSS2","Other")
 sample=intersect(pancancer_cluster_G$Tag,colnames(protein_data))
@@ -1710,7 +1755,9 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     nudge_y = 0.2
   )+ggtitle("panWSS2")
 print(volcano_p)
-###############panWSS3 vs. Other
+# ------------------------------------------------------------------------------
+# panWSS3 vs. Other
+# ------------------------------------------------------------------------------
 pancancer_cluster_G=pancancer_cluster
 pancancer_cluster_G$cluster=ifelse(pancancer_cluster_G$cluster=="panWSS3","panWSS3","Other")
 sample=intersect(pancancer_cluster_G$Tag,colnames(protein_data))
@@ -1796,7 +1843,9 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     nudge_y = 0.2 
   )+ggtitle("panWSS3")
 print(volcano_p)
-###############panWSS4 vs. Other
+# ------------------------------------------------------------------------------
+# panWSS4 vs. Other
+# ------------------------------------------------------------------------------
 pancancer_cluster_G=pancancer_cluster
 pancancer_cluster_G$cluster=ifelse(pancancer_cluster_G$cluster=="panWSS4","panWSS4","Other")
 sample=intersect(pancancer_cluster_G$Tag,colnames(protein_data))
@@ -1882,7 +1931,9 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     nudge_y = 0.2
   )+ggtitle("panWSS4")
 print(volcano_p)
-################################################################################Identification of subtypes at the mRNA level of biological identity####
+# ------------------------------------------------------------------------------
+# Identification of subtypes at the mRNA level of biological identity
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2005,7 +2056,9 @@ p = ggplot(tme_all, aes(variable, value, fill = cluster, color = cluster)) +
   stat_compare_means(aes(group = cluster, label = ..p.signif..)) +
   ggtitle("TARGET")
 p
-################################################################################HRD####
+# ------------------------------------------------------------------------------
+# HRD
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2053,7 +2106,9 @@ p=ggplot(WNT, aes(x = cluster, y = HRD, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
   ggtitle("TCGA-Pancancer")  
 print(p)
-################################################################################TARGET-age####
+# ------------------------------------------------------------------------------
+# TARGET-age
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2165,7 +2220,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################TARGET-gender####
+# ------------------------------------------------------------------------------
+# TARGET-gender
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2268,7 +2325,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TARGET-race####
+# ------------------------------------------------------------------------------
+# TARGET-race
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2371,7 +2430,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = race)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################TCGA pan-cancer for single cancers####
+# ------------------------------------------------------------------------------
+# TCGA pan-cancer for single cancers
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2473,7 +2534,9 @@ for(i in 1:length(fs)){
   assign(paste0(fs[i],"_cluster"),cluster)
   save(list=paste0(fs[i],"_cluster"),file=paste0(paste0(fs[i],"_cluster.Rdata")))
 }
-################################################################################TARGET pan-cancer for single cancers####
+# ------------------------------------------------------------------------------
+# TARGET pan-cancer for single cancers
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2575,7 +2638,9 @@ for(i in 1:length(fs)){
   assign(paste0(fs[i],"_cluster"),cluster)
   save(list=paste0(fs[i],"_cluster"),file=paste0(paste0(fs[i],"_cluster.Rdata")))
 }
-################################################################################TCGA single cancer OS####
+# ------------------------------------------------------------------------------
+# TCGA single cancer OS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2640,7 +2705,9 @@ for(i in 1:length(fs)){
   setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_os.pdf"), plot = p$plot, width=7, height=4.5)
 }
-################################################################################TARGET single cancer OS####
+# ------------------------------------------------------------------------------
+# TARGET single cancer OS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2723,7 +2790,9 @@ for(i in 1:length(fs)){
   setwd("./supplementary_figures")
   ggsave(filename = paste0("TARGET-", fs[i], "_os.pdf"), plot = p$plot, width=7, height=4.5)
 }
-################################################################################TCGA single cancer DSS####
+# ------------------------------------------------------------------------------
+# TCGA single cancer DSS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2788,7 +2857,9 @@ for(i in 1:length(fs)){
   setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_dss.pdf"), plot = p$plot, width=7, height=4.5)
 }
-################################################################################TCGA single cancer DFI####
+# ------------------------------------------------------------------------------
+# TCGA single cancer DFI
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -2853,7 +2924,9 @@ for(i in 1:length(fs)){
   setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_dfi.pdf"), plot = p$plot, width=7, height=4.5)
 }
-################################################################################TCGA single cancer PFI####
+# ------------------------------------------------------------------------------
+# TCGA single cancer PFI
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
