@@ -1,17 +1,13 @@
-#Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
-
 # ==============================================================================
 # WntAct2 -- Colorectal cancer analyses
 # ------------------------------------------------------------------------------
-# Purpose:    Large-scale validation of the WntAct score in colorectal cancer,
-#             including stratification by CMS molecular subtypes and association
-#             with molecular and clinical features.
+# Purpose:    Large-scale validation of the WntAct score in colorectal cancer, including stratification by CMS molecular subtypes and association with molecular and clinical features.
 # Inputs:     Processed CRC expression matrices with CMS subtype annotations.
 # Outputs:    Wnt activity scores and subtype-level statistical results.
+# NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.
 # ==============================================================================
 
 
-################################################################################Validation in large-scale CRC data####
 rm(list=ls())
 gc()
 library(GSVA)
@@ -329,7 +325,9 @@ ggplot(p_data_all, aes(dataset, geneset)) +
     legend.title = element_text(size = 16, color = "black")
   ) +
   labs(fill = paste0("Mean Difference"))
-################################################################################WNT score calculation in syn2623706####
+# ------------------------------------------------------------------------------
+# WNT score calculation in syn2623706
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -467,7 +465,9 @@ p3 = ggplot(data, aes(x = p_score)) +
         legend.text = element_text(size = 16, color = "black"))
 combined_plot = p1 / p2 / p3  
 print(combined_plot)
-################################################################################CMS/iCMS combined calculations####
+# ------------------------------------------------------------------------------
+# CMS/iCMS combined calculations
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -555,7 +555,9 @@ p2 = ggplot(WNT_Score_group, aes(x = group, y = activity_score, fill = group)) +
 library(patchwork)  
 combined_plot = p2 + p1  
 combined_plot
-################################################################################Comparison with iCMS2/iCMS3 markers####
+# ------------------------------------------------------------------------------
+# Comparison with iCMS2/iCMS3 markers
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSVA)
@@ -781,7 +783,9 @@ ggplot(p_data_all, aes(dataset, geneset)) +
     legend.title = element_text(size = 12, color = "black")
   ) +
   labs(fill = paste0("Correlation"))
-################################################################################Comparison of expression levels of characterised genes in syn2623706####
+# ------------------------------------------------------------------------------
+# Comparison of expression levels of characterised genes in syn2623706
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(reshape2)
@@ -855,7 +859,9 @@ if(group$group[1]%in%c("CMS1","CMS2","CMS3","CMS4","NOLBL")){
     ggtitle("syn2623706") 
   p
 }
-################################################################################Comparison of original signatures in syn2623706####
+# ------------------------------------------------------------------------------
+# Comparison of original signatures in syn2623706
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSVA)
@@ -941,7 +947,9 @@ if(group$group[1]%in%c("CMS1","CMS2","CMS3","CMS4","NOLBL")){
     ggtitle("syn2623706")  
   p  
 }
-################################################################################Number of clusters for syn2623706 (K-means typing)####
+# ------------------------------------------------------------------------------
+# Number of clusters for syn2623706 (K-means typing)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -1039,7 +1047,9 @@ p <- ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
   ggtitle("syn2623706")
 print(p)
 save(cluster,file="cluster.Rdata")
-################################################################################Percentage of each subtype in different activities of WNT and prognostic analysis####
+# ------------------------------------------------------------------------------
+# Percentage of each subtype in different activities of WNT and prognostic analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(dplyr)
@@ -1094,7 +1104,9 @@ ggplot(HML, aes(x = 3,
     plot.title = element_text(size = 16, color = 'black')
   ) +   
   labs(fill = "Subtype", y = "", x = "")  
-##################################################OS
+# ------------------------------------------------------------------------------
+# OS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(dplyr)
@@ -1172,7 +1184,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-##################################################RFS
+# ------------------------------------------------------------------------------
+# RFS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(dplyr)
@@ -1276,7 +1290,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-###################################################SAR
+# ------------------------------------------------------------------------------
+# SAR
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(dplyr)
@@ -1330,7 +1346,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-################################################################################Expression of marker genes in new typing####
+# ------------------------------------------------------------------------------
+# Expression of marker genes in new typing
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(reshape2)
@@ -1374,7 +1392,9 @@ p = ggplot(biomarker_group, aes(gene, value, fill = group, color = group)) +
   stat_compare_means(aes(group = group, label = ..p.signif..), size = 5, color = "black") +
   ggtitle("syn2623706")   
 p  
-################################################################################MSI-H/MSS/MSI-L####
+# ------------------------------------------------------------------------------
+# MSI-H/MSS/MSI-L
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -1516,7 +1536,9 @@ p4=ggplot(WNT_cluster4, aes(x = status, fill = msi)) +
   )  
 final_plot=p1 | p2 | p3 | p4  
 final_plot 
-################################################################################MUTATION_COUNT####
+# ------------------------------------------------------------------------------
+# MUTATION_COUNT
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -1557,7 +1579,9 @@ p <- ggplot(WNT, aes(x = cluster, y = log2(MUTATION_COUNT), fill = cluster)) +
   scale_fill_manual(values = c("#d71345", "#45b97c", "#145b7d", "#ffd400")) +  
   ggtitle("syn2623706") 
 p
-################################################################################TMB####
+# ------------------------------------------------------------------------------
+# TMB
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -1649,7 +1673,9 @@ p = ggpairs(
     plot.title = element_text(size = 16, color = "black")
   ) 
 p
-################################################################################FGA####
+# ------------------------------------------------------------------------------
+# FGA
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -1690,7 +1716,9 @@ p = ggplot(WNT, aes(x = cluster, y = FRACTION_GENOME_ALTERED, fill = cluster)) +
   scale_fill_manual(values = c("#d71345", "#45b97c", "#145b7d", "#ffd400")) +  
   ggtitle("syn2623706")
 p
-################################################################################age####
+# ------------------------------------------------------------------------------
+# age
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -1835,7 +1863,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################gender####
+# ------------------------------------------------------------------------------
+# gender
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -1979,7 +2009,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)  
-################################################################################APC####
+# ------------------------------------------------------------------------------
+# APC
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(reshape2)
@@ -2070,7 +2102,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = APC)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################TP53####
+# ------------------------------------------------------------------------------
+# TP53
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2176,7 +2210,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = TP53)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################BRAF####
+# ------------------------------------------------------------------------------
+# BRAF
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2289,7 +2325,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = BRAF)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################KRAS####
+# ------------------------------------------------------------------------------
+# KRAS
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2403,7 +2441,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = KRAS)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################PIK3CA####
+# ------------------------------------------------------------------------------
+# PIK3CA
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2495,7 +2535,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = PIK3CA)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################PTEN####
+# ------------------------------------------------------------------------------
+# PTEN
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2585,7 +2627,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = PTEN)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################RNF43####
+# ------------------------------------------------------------------------------
+# RNF43
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2670,7 +2714,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = RNF43)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################ZNRF3####
+# ------------------------------------------------------------------------------
+# ZNRF3
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2755,7 +2801,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = ZNRF3)) +
   ) 
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################stage####
+# ------------------------------------------------------------------------------
+# stage
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2898,7 +2946,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = stage)) +
   )  
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################grade####
+# ------------------------------------------------------------------------------
+# grade
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -2981,7 +3031,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = grade)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################CIMP cluster####
+# ------------------------------------------------------------------------------
+# CIMP cluster
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -3053,7 +3105,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = cimp)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################site####
+# ------------------------------------------------------------------------------
+# site
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -3186,7 +3240,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = site)) +
 library(patchwork)
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot) 
-################################################################################alcohol&tobacco####
+# ------------------------------------------------------------------------------
+# alcohol&tobacco
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/cluster.Rdata")
@@ -3265,7 +3321,9 @@ p4 = ggplot(WNT_cluster4, aes(x = status, fill = bad_habit)) +
   )
 final_plot = p1 | p2 | p3 | p4  
 print(final_plot)
-################################################################################drug####
+# ------------------------------------------------------------------------------
+# drug
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSVA)
@@ -3323,7 +3381,9 @@ p = ggplot(data_long, aes(x = cluster, y = value, fill = cluster)) +
   ) +
   scale_fill_manual(values = c("WSS1"="#d71345","WSS2"= "#45b97c", "WSS3"="#145b7d","WSS4"= "#ffd400"))
 print(p)
-################################################################################Large-scale CRC drug####
+# ------------------------------------------------------------------------------
+# Large-scale CRC drug
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSVA)
@@ -3397,7 +3457,9 @@ ggplot(cancer_cor_all, aes(dataset, cancer)) +
         axis.text.x = element_text(angle = 45, hjust = 1),
         axis.text.y = element_text(size = 8))+
   labs(fill =paste0(" * p < 0.05","\n\n","** p < 0.01","\n\n","*** p < 0.001","\n\n","Correlation"))
-################################################################################molecular characterisation####
+# ------------------------------------------------------------------------------
+# molecular characterisation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSVA)
@@ -3412,7 +3474,9 @@ geneset=as.data.frame(t(geneset))
 geneset=as.data.frame(scale(geneset))
 geneset=geneset[,-c(4,5)]
 name=as.data.frame(colnames(geneset))
-############################Infiltration ESTIMATE
+# ------------------------------------------------------------------------------
+# Infiltration ESTIMATE
+# ------------------------------------------------------------------------------
 geneset_zdk=geneset[,c("IMMUNE_ESTIMATE","STROMAL_ESTIMATE")]
 colnames(geneset_zdk)=c("Immune infiltration","Stromal infiltration")
 geneset_zdk_cluster=merge(cluster,geneset_zdk,by.x="Tag",by.y="row.names")
@@ -3438,7 +3502,9 @@ p = ggplot(geneset_zdk_cluster, aes(geneset, value, fill = Group, color = Group)
   stat_compare_means(aes(group = Group, label = ..p.signif..)) +  
   ggtitle("Infiltration ESTIMATE")
 p 
-############################Signatures
+# ------------------------------------------------------------------------------
+# Signatures
+# ------------------------------------------------------------------------------
 geneset_zdk=geneset[,c("SERRATED_UP","EMT_CORE_GENES","MYC_TARGETS_ZELLER","TGFB_CORE_GENES","CSC_BATLLE",
                        "MATRIX_REMODEL_REACTOME","WOUND_RESPONSE_GO_BP","CRYPT_BASE","CRYPT_TOP","EPITH_LOBODA","MESENCH_LOBODA")]
 colnames(geneset_zdk)=c("Serrated lesion","EMT activation","MYC targets","TGF-β activation","Cancer stem cell",
@@ -3468,7 +3534,9 @@ p = ggplot(geneset_zdk_cluster, aes(geneset, value, fill = Group, color = Group)
   stat_compare_means(aes(group = Group, label = ..p.signif..)) +  
   ggtitle("Signatures") 
 p 
-############################Pathways
+# ------------------------------------------------------------------------------
+# Pathways
+# ------------------------------------------------------------------------------
 geneset_zdk=geneset[,c("FGF_ACT_CP","NOTCH_REACTOME","NFKB_BIOCARTA",
                        "MAPK_KEGG","PI3K_ACT_REACTOME","SRC_ACT_BIOCARTA","JAK_STAT_KEGG","CASPASE_BIOCARTA",
                        "PROTEASOME_KEGG","CELL_CYCLE_BIOCARTA","SHH_KEGG",
@@ -3500,7 +3568,9 @@ p = ggplot(geneset_zdk_cluster, aes(geneset, value, fill = Group, color = Group)
   stat_compare_means(aes(group = Group, label = ..p.signif..)) +  
   ggtitle("Pathways")   
 p 
-############################Immune
+# ------------------------------------------------------------------------------
+# Immune
+# ------------------------------------------------------------------------------
 geneset_zdk=geneset[,c("IMMUNE_RESP_GO_BP","IMMUNE_MDSC_ALBELDA",
                        "IMMUNE_NKC_BREAST","IMMUNE_TH1_GALON","IMMUNE_TH17_GOUNARI",
                        "IMMUNE_THF_BREAST","IMMUNE_TREG_GALON","PD1_REACTOME",
@@ -3534,7 +3604,9 @@ p = ggplot(geneset_zdk_cluster, aes(geneset, value, fill = Group, color = Group)
   stat_compare_means(aes(group = Group, label = ..p.signif..)) +  
   ggtitle("Immune")  
 p
-############################Metabolism
+# ------------------------------------------------------------------------------
+# Metabolism
+# ------------------------------------------------------------------------------
 geneset_zdk=geneset[,c("ARACHNOID_METAB_KEGG","FATTY_ACID_METAB_KEGG","FRUTOSE_MANNOSE_METAB_KEGG",
                        "GALACTOSE_METAB_KEGG","GLUTATHIONE_KEGG","GLYCEROPHOSPHOLIPID_METAB_KEGG",
                        "LINOLEIC_METAB_KEGG","LYSOPHOSPHOLIPID_PID","NUCLEOTIDE_METAB_REACTOME",
@@ -3570,7 +3642,9 @@ p = ggplot(geneset_zdk_cluster, aes(geneset, value, fill = Group, color = Group)
   stat_compare_means(aes(group = Group, label = ..p.signif..)) +  
   ggtitle("Metabolism") 
 p
-################################################################################WNT score calculation in syn26720761####
+# ------------------------------------------------------------------------------
+# WNT score calculation in syn26720761
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -3738,7 +3812,9 @@ if(picture=="CMS"){
     ggtitle("syn26720761")
   p
 }
-################################################################################syn26720761 Multi-clinical Analysis####
+# ------------------------------------------------------------------------------
+# syn26720761 Multi-clinical Analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -4066,7 +4142,9 @@ p = ggplot(WNT_Score_group0, aes(x = stage, y = activity_score, fill = stage)) +
   scale_fill_manual(values = c('#abc88b', '#84bf96', "#45b97c", "#005831")) +  
   ggtitle("syn26720761")
 p
-################################################################################syn26720761 molecular characterisation####
+# ------------------------------------------------------------------------------
+# syn26720761 molecular characterisation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -4158,7 +4236,9 @@ ggplot(cancer_cor, aes(x=reorder(cancer, cor), y=cor, fill=relation)) +
     axis.text.x = element_text(angle = 75, hjust = 1)
   )  +
   ggtitle("syn26720761")
-################################################################################All CRC datasets with molecular profiling####
+# ------------------------------------------------------------------------------
+# All CRC datasets with molecular profiling
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSVA)
@@ -4267,7 +4347,9 @@ ggplot(cancer_cor_all, aes(dataset, cancer)) +
         axis.text.x = element_text(angle = 45, hjust = 1),
         axis.text.y = element_text(size = 8))+
   labs(fill =paste0(" * p < 0.05","\n\n","** p < 0.01","\n\n","*** p < 0.001","\n\n","Correlation"))
-################################################################################Data validation for robustness####
+# ------------------------------------------------------------------------------
+# Data validation for robustness
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -4324,7 +4406,9 @@ p = ggplot(WNT_Score_group, aes(x = group, y = activity_score, fill = group)) +
   scale_fill_manual(values = c('#f47920','#0073C2',"#ef5b9c",'#45b97c',"#a1a3a6")) +  
   ggtitle("UCSC.CRC")  
 p
-################################################################################robust test 1: randomly remove N dataset(s)####
+# ------------------------------------------------------------------------------
+# robust test 1: randomly remove N dataset(s)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -4567,7 +4651,9 @@ for (delete in 1:length(delete_number)){
   names(robustness_delete_all_50)[delete]=paste0("delete_",delete)
 }
 save(robustness_delete_all_50,file="robustness_delete_all_50.Rdata")
-###############################################visualisation
+# ------------------------------------------------------------------------------
+# visualisation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -4604,7 +4690,9 @@ ggplot(data_correct_all, aes(x = Deletion, y = Correct, fill = Correct)) +
     legend.position = "none"  
   ) +  
   scale_fill_gradient(low = "#7bbfea", high = "#009ad6")  
-################################################################################robust test 2: randomly swap N dataset(s)####
+# ------------------------------------------------------------------------------
+# robust test 2: randomly swap N dataset(s)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -4847,7 +4935,9 @@ for (exchange in 1:length(exchange_number)){
   names(robustness_exchange_all_50)[exchange]=paste0("exchange_",exchange)
 }
 save(robustness_exchange_all_50,file="robustness_exchange_all_50.Rdata")
-###############################################visualisation
+# ------------------------------------------------------------------------------
+# visualisation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
