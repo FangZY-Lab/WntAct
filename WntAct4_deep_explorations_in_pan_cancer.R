@@ -1,11 +1,22 @@
 #Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
+
+# ==============================================================================
+# WntAct4 -- Deep pan-cancer explorations
+# ------------------------------------------------------------------------------
+# Purpose:    Pan-cancer subtyping by k-means clustering of Wnt activity scores
+#             and deep multi-omic characterization of the resulting subtypes.
+# Inputs:     Pan-cancer Wnt activity scores and group annotations.
+# Outputs:    Subtype assignments and downstream comparative analyses.
+# ==============================================================================
+
+
 ################################################################################TCGA pan-cancer typing matrix####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("input")
+load("input/pancancer_WNT_Score.Rdata")
 genesets=as.matrix(pancancer_WNT_Score$single_score_matrix)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 genesets=genesets[rownames(pancancer_group),]
 library(mlbench)
@@ -101,10 +112,10 @@ save(pancancer_cluster,file="pancancer_cluster.Rdata")
 ################################################################################TARGET pan-cancer typing matrix####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_Score.Rdata")
+setwd("input")
+load("input/TARGET_WNT_Score.Rdata")
 genesets=as.matrix(TARGET_WNT_Score$single_score_matrix)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
 genesets=genesets[rownames(TARGET_G),]
 library(mlbench)
@@ -200,15 +211,15 @@ save(TARGET_cluster,file="TARGET_cluster.Rdata")
 ################################################################################TARGET+TCGA cumulative bar chart####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_cluster.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
 TARGET_G$Project=paste0("TARGET-",TARGET_G$Project)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_cluster.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 pancancer_group$Project=paste0("TCGA-",pancancer_group$Project)
 pancancer_group=rbind(pancancer_group,TARGET_G)
@@ -233,9 +244,9 @@ ggplot(df_percent, aes(x = project, y = percent, fill = cluster)) +
 rm(list=ls())
 gc()
 library(reshape2)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("input")
+load("input/pancancer_exp.Rdata")
+load("input/pancancer_cluster.Rdata")
 group=pancancer_cluster
 colnames(group)=c("Tag","group")
 co_sample=intersect(colnames(pancancer_exp),group$Tag)
@@ -286,9 +297,9 @@ print(p)
 rm(list=ls())
 gc()
 library(reshape2)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
+setwd("input")
+load("input/TARGET.Rdata")
+load("input/TARGET_cluster.Rdata")
 group=TARGET_cluster
 colnames(group)=c("Tag","group")
 co_sample=intersect(colnames(TARGET),group$Tag)
@@ -338,10 +349,10 @@ print(p)
 ################################################################################TCGA-OS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","OS","OS.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -389,10 +400,10 @@ print(p)
 ################################################################################TARGET-OS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
+load("input/TARGET_cluster.Rdata")
 survival_data1=read.delim("TARGET-AML.survival.tsv")
 survival_data2=read.delim("TARGET-ALL-P1.survival.tsv")
 survival_data3=read.delim("TARGET-ALL-P2.survival.tsv")
@@ -458,10 +469,10 @@ print(p)
 ################################################################################DSS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","DSS","DSS.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -509,10 +520,10 @@ print(p)
 ################################################################################DFI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","DFI","DFI.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -560,10 +571,10 @@ print(p)
 ################################################################################PFI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","PFI","PFI.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -611,11 +622,11 @@ print(p)
 ################################################################################TCGA-age####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 age=survival_data[,c(1,4)]
 colnames(age)=c("sample","age")
@@ -697,11 +708,11 @@ print(final_plot)
 ################################################################################TCGA-gender####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 gender=survival_data[,c(1,5)]
 gender$gender=ifelse(gender$gender=="MALE","Male","Female")
@@ -772,11 +783,11 @@ print(final_plot)
 ################################################################################TCGA-race####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 race=survival_data[,c(1,6)]
 table(race$race)
@@ -854,11 +865,11 @@ print(final_plot)
 ################################################################################TCGA-stage####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 stage=survival_data[,c(1,8)]
 colnames(stage)=c("sample","stage")
@@ -941,11 +952,11 @@ print(final_plot)
 ################################################################################TCGA-grade####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 grade=survival_data[,c(1,10)]
 colnames(grade)=c("sample","grade")
@@ -1019,11 +1030,11 @@ print(final_plot)
 ################################################################################TCGA-status####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 status=survival_data[,c(1,15)]
 colnames(status)=c("sample","tumor_status")
@@ -1096,11 +1107,11 @@ print(final_plot)
 ################################################################################TCGA-outcome####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("clinical.tsv")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 outcome=survival_data[,c(1,23)]
@@ -1175,11 +1186,11 @@ print(final_plot)
 ################################################################################TCGA-margin####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 margin=survival_data[,c(1,24)]
 colnames(margin)=c("sample","margin")
@@ -1252,11 +1263,11 @@ print(final_plot)
 ################################################################################TCGA-residual####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 residual=survival_data[,c(1,25)]
 colnames(residual)=c("sample","residual")
@@ -1329,11 +1340,11 @@ print(final_plot)
 ################################################################################TCGA-mutation####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 mut_data=read.delim("mc3.v0.2.8.PUBLIC.nonsilentGene.xena",check.names = F)
 mut_data=mut_data[mut_data$sample%in%c("APC","AXIN1","AXIN2","RNF43","DKK1","DKK3","TCF7L2","GSK3B","CTNNB1"),]
 rownames(mut_data)=mut_data[,1]
@@ -1342,7 +1353,7 @@ mut_data=t(mut_data)
 mut_data=ifelse(mut_data==1,"MT","WT")
 mut_data=as.data.frame(mut_data)
 save(mut_data,file="mut_data.Rdata")
-load("C:/Users/赵定康/Desktop/input/mut_data.Rdata")
+load("input/mut_data.Rdata")
 gene=merge(pancancer_cluster,mut_data,by.x="Tag",by.y="row.names")
 gene=gene[,c("cluster","APC")]
 colnames(gene)=c("cluster","gene")
@@ -1412,11 +1423,11 @@ print(final_plot)
 ################################################################################Protein labelling standardisation####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 protein_data=read.delim("TCGA-RPPA-pancan-clean.xena",check.names = F)
 rownames(protein_data)=protein_data[,1]
 protein_data=protein_data[,-1]
@@ -1463,11 +1474,11 @@ save(protein_tag,file="protein_tag.Rdata")
 ################################################################################Expression of β-catenin protein####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 protein_data=read.delim("TCGA-RPPA-pancan-clean.xena",check.names = F)
 rownames(protein_data)=protein_data[,1]
 protein_data=protein_data[,-1]
@@ -1508,10 +1519,10 @@ p=ggplot(WNT, aes(x = cluster, y = BETACATENIN, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
   ggtitle("TCGA-Pancancer")  
 print(p)
-################################################################################蛋白差异表达####
+################################################################################Protein differential expression####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
@@ -1522,7 +1533,7 @@ limma.one.sided = function(fit, lower = FALSE){
   df.total=fit$df.prior + fit$df.residual
   pt(fit$t, df = df.total, lower.tail = lower)
 }
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 protein_data=read.delim("TCGA-RPPA-pancan-clean.xena",check.names = F)
 rownames(protein_data)=protein_data[,1]
 protein_data=protein_data[,-1]
@@ -1675,7 +1686,7 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
                                 "Up" = "#f7acbc")) +
   theme_bw() +
   theme(
-    axis.line = element_line(colour = "black"), # 保留坐标轴线
+    axis.line = element_line(colour = "black"), # Keep the axis lines
     axis.text = element_text(size = 15, face = "bold"),
     axis.title = element_text(size = 15, face = "bold"),
     legend.title = element_text(size = 15),
@@ -1874,30 +1885,30 @@ print(volcano_p)
 ################################################################################Identification of subtypes at the mRNA level of biological identity####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
 library(GSEABase)
 hallmarker=getGmt("geneset_hallmark.gmt")
 hallmarker_gmt=lapply(hallmarker, function(x){ x@geneIds })
 names(hallmarker_gmt)=names(hallmarker)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 pancancer_exp=pancancer_exp[,rownames(pancancer_group)]
 hallmarker_activity=calculate_sig_score(eset = pancancer_exp,signature = hallmarker_gmt,method="ssgsea",mini_gene_count=1)
 save(hallmarker_activity,file="hallmarker_activity.Rdata")
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
 library(limma)
 library(GSEABase)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_cluster.Rdata")
+load("input/pancancer_exp.Rdata")
 pancancer_exp=pancancer_exp[,pancancer_cluster$Tag]
-load("C:/Users/赵定康/Desktop/input/hallmarker_activity.Rdata")
+load("input/hallmarker_activity.Rdata")
 hallmarker_activity=as.data.frame(hallmarker_activity)
 rownames(hallmarker_activity)=hallmarker_activity[,1]
 hallmarker_activity=hallmarker_activity[,-1]
@@ -1935,30 +1946,30 @@ p = ggplot(tme_all, aes(x = variable, y = value, fill = cluster)) +
 p
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
 library(GSEABase)
 hallmarker=getGmt("geneset_hallmark.gmt")
 hallmarker_gmt=lapply(hallmarker, function(x){ x@geneIds })
 names(hallmarker_gmt)=names(hallmarker)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET.Rdata")
 TARGET=TARGET[,rownames(TARGET_G)]
 TARGET_hallmarker_activity=calculate_sig_score(eset = TARGET,signature = hallmarker_gmt,method="ssgsea",mini_gene_count=1)
 save(TARGET_hallmarker_activity,file="TARGET_hallmarker_activity.Rdata")
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
 library(limma)
 library(GSEABase)
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET_cluster.Rdata")
+load("input/TARGET.Rdata")
 TARGET=TARGET[,TARGET_cluster$Tag]
-load("C:/Users/赵定康/Desktop/input/TARGET_hallmarker_activity.Rdata")
+load("input/TARGET_hallmarker_activity.Rdata")
 TARGET_hallmarker_activity=as.data.frame(TARGET_hallmarker_activity)
 rownames(TARGET_hallmarker_activity)=TARGET_hallmarker_activity[,1]
 TARGET_hallmarker_activity=TARGET_hallmarker_activity[,-1]
@@ -1997,11 +2008,11 @@ p
 ################################################################################HRD####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 HRD_data=read.delim("TCGA.HRD_withSampleID.txt",check.names = F)
 rownames(HRD_data)=HRD_data[,1]
 HRD_data=HRD_data[,-1]
@@ -2045,11 +2056,11 @@ print(p)
 ################################################################################TARGET-age####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
+load("input/TARGET_cluster.Rdata")
 rt1_G=read.table(file = "TARGET-AML.clinical.tsv",header = T,sep = "\t",check.names = F)
 rt1_G=rt1_G[,c("sample","age_at_index.demographic")]
 rt2_G=read.table(file = "TARGET-ALL-P1.clinical.tsv",header = T,sep = "\t",check.names = F)
@@ -2157,11 +2168,11 @@ print(final_plot)
 ################################################################################TARGET-gender####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
+load("input/TARGET_cluster.Rdata")
 rt1_G=read.table(file = "TARGET-AML.clinical.tsv",header = T,sep = "\t",check.names = F)
 rt1_G=rt1_G[,c("sample","gender.demographic")]
 rt2_G=read.table(file = "TARGET-ALL-P1.clinical.tsv",header = T,sep = "\t",check.names = F)
@@ -2260,11 +2271,11 @@ print(final_plot)
 ################################################################################TARGET-race####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/TARGET_cluster.Rdata")
+load("input/TARGET_cluster.Rdata")
 rt1_G=read.table(file = "TARGET-AML.clinical.tsv",header = T,sep = "\t",check.names = F)
 rt1_G=rt1_G[,c("sample","race.demographic")]
 rt2_G=read.table(file = "TARGET-ALL-P1.clinical.tsv",header = T,sep = "\t",check.names = F)
@@ -2363,15 +2374,15 @@ print(final_plot)
 ################################################################################TCGA pan-cancer for single cancers####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("input")
+load("input/pancancer_WNT_Score.Rdata")
 genesets=as.matrix(pancancer_WNT_Score$single_score_matrix)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 genesets=genesets[rownames(pancancer_group),]
 fs=unique(pancancer_group$Project)
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   pancancer_group_single=pancancer_group[pancancer_group$Project==fs[i],]
   genesets_single=genesets[rownames(pancancer_group_single),]
   library(mlbench)
@@ -2411,7 +2422,7 @@ for(i in 1:length(fs)){
       axis.title = element_text(size = 16, color = "black"),
       axis.text = element_text(size = 16, color = "black")
     )
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   cluster=data.frame(Tag = rownames(as.data.frame(dd)),cluster=as.data.frame(dd)$cluster,stringsAsFactors = FALSE)
   cluster$cluster = paste("cluster",cluster$cluster, sep = "")
   cluster$cluster=ifelse(cluster$cluster=="cluster1",paste0(tolower(fs[i]),"WSS1"),
@@ -2458,22 +2469,22 @@ for(i in 1:length(fs)){
     scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
     ggtitle(paste0("TCGA-",fs[i]))  
   print(p1)
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   assign(paste0(fs[i],"_cluster"),cluster)
   save(list=paste0(fs[i],"_cluster"),file=paste0(paste0(fs[i],"_cluster.Rdata")))
 }
 ################################################################################TARGET pan-cancer for single cancers####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_Score.Rdata")
+setwd("input")
+load("input/TARGET_WNT_Score.Rdata")
 genesets=as.matrix(TARGET_WNT_Score$single_score_matrix)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
 genesets=genesets[rownames(TARGET_G),]
 fs=unique(TARGET_G$Project)
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   TARGET_group_single=TARGET_G[TARGET_G$Project==fs[i],]
   genesets_single=genesets[rownames(TARGET_group_single),]
   library(mlbench)
@@ -2513,7 +2524,7 @@ for(i in 1:length(fs)){
       axis.title = element_text(size = 16, color = "black"),
       axis.text = element_text(size = 16, color = "black")
     )
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   cluster=data.frame(Tag = rownames(as.data.frame(dd)),cluster=as.data.frame(dd)$cluster,stringsAsFactors = FALSE)
   cluster$cluster = paste("cluster",cluster$cluster, sep = "")
   cluster$cluster=ifelse(cluster$cluster=="cluster1",paste0(tolower(fs[i]),"WSS1"),
@@ -2560,23 +2571,23 @@ for(i in 1:length(fs)){
     scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
     ggtitle(paste0("TARGET-",fs[i]))  
   print(p1)
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   assign(paste0(fs[i],"_cluster"),cluster)
   save(list=paste0(fs[i],"_cluster"),file=paste0(paste0(fs[i],"_cluster.Rdata")))
 }
 ################################################################################TCGA single cancer OS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 p_TCGA=data.frame()
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
-  load(paste0("C:/Users/赵定康/Desktop/input/",fs[i],"_cluster.Rdata"))
+  setwd("input")
+  load(paste0("input/",fs[i],"_cluster.Rdata"))
   cluster=get(paste0(fs[i],"_cluster"))
   survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
   survival_data=survival_data[,c("sample","OS","OS.time")]
@@ -2626,22 +2637,22 @@ for(i in 1:length(fs)){
     annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
-  setwd("C:/Users/赵定康/Desktop/补充图片")
+  setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_os.pdf"), plot = p$plot, width=7, height=4.5)
 }
 ################################################################################TARGET single cancer OS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
 fs=unique(TARGET_G$Project)
 p_TARGET=data.frame()
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
-  load(paste0("C:/Users/赵定康/Desktop/input/",fs[i],"_cluster.Rdata"))
+  setwd("input")
+  load(paste0("input/",fs[i],"_cluster.Rdata"))
   cluster=get(paste0(fs[i],"_cluster"))
   survival_data1=read.delim("TARGET-AML.survival.tsv")
   survival_data2=read.delim("TARGET-ALL-P1.survival.tsv")
@@ -2709,22 +2720,22 @@ for(i in 1:length(fs)){
     annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
-  setwd("C:/Users/赵定康/Desktop/补充图片")
+  setwd("./supplementary_figures")
   ggsave(filename = paste0("TARGET-", fs[i], "_os.pdf"), plot = p$plot, width=7, height=4.5)
 }
 ################################################################################TCGA single cancer DSS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)[-c(6)]
 p_TCGA=data.frame()
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
-  load(paste0("C:/Users/赵定康/Desktop/input/",fs[i],"_cluster.Rdata"))
+  setwd("input")
+  load(paste0("input/",fs[i],"_cluster.Rdata"))
   cluster=get(paste0(fs[i],"_cluster"))
   survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
   survival_data=survival_data[,c("sample","DSS","DSS.time")]
@@ -2774,22 +2785,22 @@ for(i in 1:length(fs)){
     annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
-  setwd("C:/Users/赵定康/Desktop/补充图片")
+  setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_dss.pdf"), plot = p$plot, width=7, height=4.5)
 }
 ################################################################################TCGA single cancer DFI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)[-c(6,7,17,20,28)]
 p_TCGA=data.frame()
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
-  load(paste0("C:/Users/赵定康/Desktop/input/",fs[i],"_cluster.Rdata"))
+  setwd("input")
+  load(paste0("input/",fs[i],"_cluster.Rdata"))
   cluster=get(paste0(fs[i],"_cluster"))
   survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
   survival_data=survival_data[,c("sample","DFI","DFI.time")]
@@ -2839,22 +2850,22 @@ for(i in 1:length(fs)){
     annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
-  setwd("C:/Users/赵定康/Desktop/补充图片")
+  setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_dfi.pdf"), plot = p$plot, width=7, height=4.5)
 }
 ################################################################################TCGA single cancer PFI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)[-c(6)]
 p_TCGA=data.frame()
 for(i in 1:length(fs)){
-  setwd("C:/Users/赵定康/Desktop/input")
-  load(paste0("C:/Users/赵定康/Desktop/input/",fs[i],"_cluster.Rdata"))
+  setwd("input")
+  load(paste0("input/",fs[i],"_cluster.Rdata"))
   cluster=get(paste0(fs[i],"_cluster"))
   survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
   survival_data=survival_data[,c("sample","PFI","PFI.time")]
@@ -2904,6 +2915,6 @@ for(i in 1:length(fs)){
     annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
-  setwd("C:/Users/赵定康/Desktop/补充图片")
+  setwd("./supplementary_figures")
   ggsave(filename = paste0("TCGA-", fs[i], "_pfi.pdf"), plot = p$plot, width=7, height=4.5)
 }
