@@ -1,10 +1,22 @@
 #Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
+
+# ==============================================================================
+# WntAct2 -- Colorectal cancer analyses
+# ------------------------------------------------------------------------------
+# Purpose:    Large-scale validation of the WntAct score in colorectal cancer,
+#             including stratification by CMS molecular subtypes and association
+#             with molecular and clinical features.
+# Inputs:     Processed CRC expression matrices with CMS subtype annotations.
+# Outputs:    Wnt activity scores and subtype-level statistical results.
+# ==============================================================================
+
+
 ################################################################################Validation in large-scale CRC data####
 rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/exp_data")
+setwd("exp_data")
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
           "GSE21815","GSE17537","GSE29621",
@@ -20,13 +32,13 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 p_data_ee_all=data.frame()
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -321,18 +333,18 @@ ggplot(p_data_all, aes(dataset, geneset)) +
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
+load("input/info_cms.Rdata")
+load("input/info_icms.Rdata")
 group=info_icms
 co_sample=intersect(colnames(crc_data_all),group$Tag)
 crc_data_all=crc_data_all[,co_sample]
 group=group[group$Tag%in%co_sample,]
 exp=as.data.frame(crc_data_all)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -459,10 +471,10 @@ print(combined_plot)
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
+load("input/info_cms.Rdata")
+load("input/info_icms.Rdata")
 info_cms_icms=merge(info_cms,info_icms,by="Tag")
 write.csv(info_cms_icms,file = "info_cms_icms.csv")
 info_cms_icms$group=paste0(info_cms_icms$group.x,"_",info_cms_icms$group.y)
@@ -473,8 +485,8 @@ crc_data_all=crc_data_all[,co_sample]
 group=group[group$Tag%in%co_sample,]
 exp=as.data.frame(crc_data_all)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -548,7 +560,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/exp_data")
+setwd("exp_data")
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
           "GSE21815","GSE17537","GSE29621",
@@ -564,14 +576,14 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 icms2_icms3=getGmt("iCMS2_iCMS3.gmt")
 p_data_ee_all=data.frame()
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -773,10 +785,10 @@ ggplot(p_data_all, aes(dataset, geneset)) +
 rm(list=ls())
 gc()
 library(reshape2)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
+load("input/info_cms.Rdata")
+load("input/info_icms.Rdata")
 group=info_cms#Substitution can be done here, the replacement variables are info_cms and info_icms.
 co_sample=intersect(colnames(crc_data_all),group$Tag)
 crc_data_all=crc_data_all[,co_sample]
@@ -848,10 +860,10 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
+load("input/info_cms.Rdata")
+load("input/info_icms.Rdata")
 group=info_cms#Substitution can be done here, the replacement variables are info_cms and info_icms.
 co_sample=intersect(colnames(crc_data_all),group$Tag)
 crc_data_all=crc_data_all[,co_sample]
@@ -933,12 +945,12 @@ if(group$group[1]%in%c("CMS1","CMS2","CMS3","CMS4","NOLBL")){
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
 exp=as.data.frame(crc_data_all)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -1032,9 +1044,9 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+load("input/cluster.Rdata")
+load("input/info_cms.Rdata")
+load("input/info_icms.Rdata")
 cluster_group=merge(cluster,info_icms,by="Tag")
 cluster_group$level=cluster_group$cluster
 cluster1=cluster_group[cluster_group$level=="WSS1",]
@@ -1087,8 +1099,8 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","osMo","osStat")]
 
@@ -1165,8 +1177,8 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","rfsMo","rfsStat")]
 
@@ -1269,9 +1281,9 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/OS_data.Rdata")
-load("C:/Users/赵定康/Desktop/input/RFS_data.Rdata")
+load("input/cluster.Rdata")
+load("input/OS_data.Rdata")
+load("input/RFS_data.Rdata")
 survial=merge(OS_data,RFS_data,by="sample")
 survial=na.omit(survial)
 survial=survial[survial$rfsStat==1,]
@@ -1322,9 +1334,9 @@ print(p)
 rm(list=ls())
 gc()
 library(reshape2)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
+load("input/cluster.Rdata")
 group=cluster
 colnames(group)=c("Tag","group")
 co_sample=intersect(colnames(crc_data_all),group$Tag)
@@ -1365,8 +1377,8 @@ p
 ################################################################################MSI-H/MSS/MSI-L####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c(1,11)]
 clinical_molecular_public_all=na.omit(clinical_molecular_public_all)
@@ -1507,9 +1519,9 @@ final_plot
 ################################################################################MUTATION_COUNT####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/mutation_count.Rdata")
+load("input/cluster.Rdata")
+setwd("input")
+load("input/mutation_count.Rdata")
 pancancer_df$sampleId=substr(pancancer_df$sampleId,1,12)
 WNT=merge(pancancer_df,cluster,by.x="sampleId",by.y="Tag")
 WNT$MUTATION_COUNT=as.numeric(WNT$MUTATION_COUNT)
@@ -1549,18 +1561,18 @@ p
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+setwd("input")
+load("input/crc_data_all.Rdata")
+load("input/info_cms.Rdata")
+load("input/info_icms.Rdata")
 group=info_icms
 co_sample=intersect(colnames(crc_data_all),group$Tag)
 crc_data_all=crc_data_all[,co_sample]
 group=group[group$Tag%in%co_sample,]
 exp=as.data.frame(crc_data_all)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -1570,9 +1582,9 @@ WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/in
                                        max.sz=10000,
                                        geneset_direction=c(rep("pos",sum(grepl("WPAGS", names(geneSets)))),
                                                            rep("neg",sum(grepl("WPIGS", names(geneSets))))))
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TMB/TMB.Rdata")
+load("input/cluster.Rdata")
+setwd("input")
+load("input/TMB/TMB.Rdata")
 TMB$Tag=substr(row.names(TMB),1,12)
 TMB=TMB[,-2]
 TMB=aggregate(. ~ Tag, data = TMB, FUN = mean)
@@ -1628,7 +1640,7 @@ p = ggpairs(
   diag = list(continuous = "barDiag")  
 ) +  
   scale_color_manual(values = c("#d71345", "#45b97c", "#145b7d", "#ffd400")) +
-  scale_fill_brewer(palette = 1) +    # 自定义对角线直方图的颜色  
+  scale_fill_brewer(palette = 1) +    # Customize the diagonal-histogram color  
   theme_bw() +  
   theme(  
     strip.text = element_text(size = 16, color = "black"),
@@ -1640,9 +1652,9 @@ p
 ################################################################################FGA####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/FGA.Rdata")
+load("input/cluster.Rdata")
+setwd("input")
+load("input/FGA.Rdata")
 pancancer_df$sampleId=substr(pancancer_df$sampleId,1,12)
 WNT=merge(pancancer_df,cluster,by.x="sampleId",by.y="Tag")
 WNT$FRACTION_GENOME_ALTERED=as.numeric(WNT$FRACTION_GENOME_ALTERED)
@@ -1681,8 +1693,8 @@ p
 ################################################################################age####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","age")]
 clinical_molecular_public_all=na.omit(clinical_molecular_public_all)
@@ -1826,8 +1838,8 @@ print(final_plot)
 ################################################################################gender####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c(1,4)]
 clinical_molecular_public_all=na.omit(clinical_molecular_public_all)
@@ -1971,8 +1983,8 @@ print(final_plot)
 rm(list=ls())
 gc()
 library(reshape2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 gse35896_annotation=read.table(file = "gse35896_annotation.tsv",header = T,sep = "\t",check.names = F)
 gse35896_annotation=gse35896_annotation[,c(1,8)]
 colnames(gse35896_annotation)=c("sample","APC")
@@ -2061,8 +2073,8 @@ print(final_plot)
 ################################################################################TP53####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 gse35896_annotation=read.table(file = "gse35896_annotation.tsv",header = T,sep = "\t",check.names = F)
 gse35896_annotation=gse35896_annotation[,c(1,9)]
 colnames(gse35896_annotation)=c("sample","TP53")
@@ -2167,8 +2179,8 @@ print(final_plot)
 ################################################################################BRAF####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 gse35896_annotation=read.table(file = "gse35896_annotation.tsv",header = T,sep = "\t",check.names = F)
 gse35896_annotation=gse35896_annotation[,c(1,7)]
 colnames(gse35896_annotation)=c("sample","BRAF")
@@ -2280,8 +2292,8 @@ print(final_plot)
 ################################################################################KRAS####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 gse35896_annotation=read.table(file = "gse35896_annotation.tsv",header = T,sep = "\t",check.names = F)
 gse35896_annotation=gse35896_annotation[,c(1,6)]
 colnames(gse35896_annotation)=c("sample","KRAS")
@@ -2394,8 +2406,8 @@ print(final_plot)
 ################################################################################PIK3CA####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 
 gse35896_annotation=read.table(file = "gse35896_annotation.tsv",header = T,sep = "\t",check.names = F)
 gse35896_annotation=gse35896_annotation[,c(1,10)]
@@ -2486,8 +2498,8 @@ print(final_plot)
 ################################################################################PTEN####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 gse35896_annotation=read.table(file = "gse35896_annotation.tsv",header = T,sep = "\t",check.names = F)
 gse35896_annotation=gse35896_annotation[,c(1,11)]
 colnames(gse35896_annotation)=c("sample","PTEN")
@@ -2576,8 +2588,8 @@ print(final_plot)
 ################################################################################RNF43####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 COADREAD_mc3_gene_level=read.delim(file = "COADREAD_mc3_gene_level.txt",header = T,sep = "\t",check.names = F)
 COADREAD_mc3_gene_level=COADREAD_mc3_gene_level[COADREAD_mc3_gene_level$xena_sample%in%c("RNF43","BRAF","TP53","APC","PTEN"),]
 rownames(COADREAD_mc3_gene_level)=COADREAD_mc3_gene_level[,1]
@@ -2661,8 +2673,8 @@ print(final_plot)
 ################################################################################ZNRF3####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 COADREAD_mc3_gene_level=read.delim(file = "COADREAD_mc3_gene_level.txt",header = T,sep = "\t",check.names = F)
 COADREAD_mc3_gene_level=COADREAD_mc3_gene_level[COADREAD_mc3_gene_level$xena_sample%in%c("RNF43","ZNRF3","TP53","APC","PTEN"),]
 rownames(COADREAD_mc3_gene_level)=COADREAD_mc3_gene_level[,1]
@@ -2746,8 +2758,8 @@ print(final_plot)
 ################################################################################stage####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","stage")]
@@ -2889,8 +2901,8 @@ print(final_plot)
 ################################################################################grade####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","grade")]
@@ -2972,8 +2984,8 @@ print(final_plot)
 ################################################################################CIMP cluster####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","cimp")]
 clinical_molecular_public_all=na.omit(clinical_molecular_public_all)
@@ -3044,8 +3056,8 @@ print(final_plot)
 ################################################################################site####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 TCGACRC_clinical_merged=read.table(file = "TCGACRC_clinical-merged.tsv",header = T,sep = "\t",check.names = F)
 TCGACRC_clinical_merged=TCGACRC_clinical_merged[,c(1,8)]
 TCGACRC_clinical_merged=na.omit(TCGACRC_clinical_merged)
@@ -3177,8 +3189,8 @@ print(final_plot)
 ################################################################################alcohol&tobacco####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("input/cluster.Rdata")
+setwd("input")
 gse2109_annoatation=read.table(file = "gse2109_annoatation.tsv",header = T,sep = "\t",check.names = F)
 gse2109_annoatation=gse2109_annoatation[,c(1,2,50)]
 gse2109_annoatation$bad_habit=paste0(gse2109_annoatation$`Alcohol Consumption?`,gse2109_annoatation$`Tobacco Use`)
@@ -3258,8 +3270,8 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
+load("input/cluster.Rdata")
+load("input/crc_data_all.Rdata")
 exp=as.data.frame(crc_data_all)
 drug=getGmt("CRC_drug.gmt")
 drug_cluster=gsva(expr=as.matrix(exp), drug, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
@@ -3316,7 +3328,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/exp_data")
+setwd("exp_data")
 vector=c("GSE44076","GSE44861","GSE21510",
          "GSE68468","GSE37178","GSE18105",
          "GSE21815","GSE17537","GSE29621",
@@ -3330,13 +3342,13 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 cancer_cor_all=data.frame()
 for (i in 1:length(vector)){
   rt=get(paste0(vector[i],"_CMS"))
-  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                          expression_profile=rt,
                                          foundation="relative_ssGSEA",
                                          activation_geneset=NA,
@@ -3349,7 +3361,7 @@ for (i in 1:length(vector)){
   library(GSVA)
   library(GSEABase)
   library(reshape)
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   GeneSets=getGmt("CRC_drug.gmt")
   geneset=gsva(expr=as.matrix(rt), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -3391,9 +3403,9 @@ gc()
 library(GSVA)
 library(GSEABase)
 library(reshape)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
+setwd("input")
+load("input/cluster.Rdata")
+load("input/crc_data_all.Rdata")
 GeneSets=getGmt("NM_genesets.gmt")
 geneset=gsva(expr=as.matrix(crc_data_all), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
 geneset=as.data.frame(t(geneset))
@@ -3562,11 +3574,11 @@ p
 rm(list=ls())
 gc()
 library(GSEABase)
-load("C:/Users/赵定康/Desktop/exp_data/syn26720761_CMS.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("exp_data/syn26720761_CMS.Rdata")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=syn26720761_CMS,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3730,11 +3742,11 @@ if(picture=="CMS"){
 rm(list=ls())
 gc()
 library(GSEABase)
-load("C:/Users/赵定康/Desktop/exp_data/syn26720761_CMS.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("exp_data/syn26720761_CMS.Rdata")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=syn26720761_CMS,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -4058,11 +4070,11 @@ p
 rm(list=ls())
 gc()
 library(GSEABase)
-load("C:/Users/赵定康/Desktop/exp_data/syn26720761_CMS.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("exp_data/syn26720761_CMS.Rdata")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=syn26720761_CMS,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -4076,7 +4088,7 @@ WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/in
 library(GSVA)
 library(GSEABase)
 library(reshape)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 GeneSets=getGmt("NM_genesets.gmt")
 geneset=gsva(expr=as.matrix(syn26720761_CMS), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
 geneset=as.data.frame(t(geneset))
@@ -4151,7 +4163,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/exp_data")
+setwd("exp_data")
 vector=c("GSE44076","GSE44861","GSE21510",
          "GSE68468","GSE37178","GSE18105",
          "GSE21815","GSE17537","GSE29621",
@@ -4165,13 +4177,13 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 cancer_cor_all=data.frame()
 for (i in 1:length(vector)){
   rt=get(paste0(vector[i],"_CMS"))
-  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                          expression_profile=rt,
                                          foundation="relative_ssGSEA",
                                          activation_geneset=NA,
@@ -4184,7 +4196,7 @@ for (i in 1:length(vector)){
   library(GSVA)
   library(GSEABase)
   library(reshape)
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   GeneSets=getGmt("NM_genesets.gmt")
   geneset=gsva(expr=as.matrix(rt), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -4259,17 +4271,17 @@ ggplot(cancer_cor_all, aes(dataset, cancer)) +
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
-load("C:/Users/赵定康/Desktop/exp_data/UCSC.CRC_CMS2_CMS_G.Rdata")
+setwd("input")
+load("exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+load("exp_data/UCSC.CRC_CMS2_CMS_G.Rdata")
 group=UCSC.CRC_CMS2_CMS_G
 co_sample=intersect(colnames(UCSC.CRC_CMS2_CMS),group$Tag)
 UCSC.CRC_CMS2_CMS=UCSC.CRC_CMS2_CMS[,co_sample]
 group=group[group$Tag%in%co_sample,]
 exp=as.data.frame(UCSC.CRC_CMS2_CMS)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -4316,7 +4328,7 @@ p
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector_all=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
              "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
              "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -4342,8 +4354,8 @@ for (delete in 1:length(delete_number)){
       vector = vector_all
     }
     group_HL=read.delim("WNT_HL.txt",header=TRUE,sep='\t',check.names=F)
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
-    up.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+    source("functions/Get_denovo_genesets.R")
+    up.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                            expression_accession_vector=vector,
                                            group_HL=group_HL,
                                            gene_difference_method=c("limma"),
@@ -4354,7 +4366,7 @@ for (delete in 1:length(delete_number)){
                                            gene_Pfilter=NA,
                                            gene_FCfilter=NA,
                                            export_file=F)
-    dn.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+    dn.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                            expression_accession_vector=vector,
                                            group_HL=group_HL,
                                            gene_difference_method=c("limma"),
@@ -4411,13 +4423,13 @@ for (delete in 1:length(delete_number)){
     })
     all_wnt_genesets=as.data.frame(all_wnt_genesets)
     save(all_wnt_genesets,file="all_wnt_genesets.Rdata")
-    load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+    load("input/all_wnt_genesets.Rdata")
     all_genesets=all_wnt_genesets[-1,]
     UP.genesets=all_genesets
     DN.genesets=all_genesets
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+    source("functions/Precise_cleaning_system.R")
     group_HL=read.delim("WNT_HL.txt",header=TRUE,sep='\t',check.names=F)
-    UP.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/Desktop/input",
+    UP.clean_genesets_rank=Precise_cleaning_system(file_paths="input",
                                                    expression_accession_vector=vector,
                                                    group_HL=group_HL,
                                                    gene_difference_method=c("limma"),
@@ -4437,7 +4449,7 @@ for (delete in 1:length(delete_number)){
                                                    min.sz=1,
                                                    max.sz=10000,
                                                    export_file=F)
-    DN.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/Desktop/input",
+    DN.clean_genesets_rank=Precise_cleaning_system(file_paths="input",
                                                    expression_accession_vector=vector,
                                                    group_HL=group_HL,
                                                    gene_difference_method=c("limma"),
@@ -4459,8 +4471,8 @@ for (delete in 1:length(delete_number)){
                                                    export_file=F)
     UP.clean_genesets=UP.clean_genesets_rank$update_activation_geneset
     DN.clean_genesets=DN.clean_genesets_rank$update_inhibition_geneset
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
-    joint_genesets=Joint_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+    source("functions/Joint_genesets.R")
+    joint_genesets=Joint_genesets(file_paths="input",
                                   activation_geneset=UP.clean_genesets,
                                   inhibition_geneset=DN.clean_genesets,
                                   delete_GN=T,
@@ -4501,14 +4513,14 @@ for (delete in 1:length(delete_number)){
       gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
       writeLines(gs.lines, con = file)
     }
-    write.gmt(wpags_wpigs,file="C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
-    load("C:/Users/赵定康/Desktop/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
-    load("C:/Users/赵定康/Desktop/exp_data/UCSC.CRC_CMS2_CMS_G.Rdata")
+    write.gmt(wpags_wpigs,file="input/wpags_wpigs_r.gmt")
+    load("exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+    load("exp_data/UCSC.CRC_CMS2_CMS_G.Rdata")
     crc_data_all=UCSC.CRC_CMS2_CMS
     info_cms=UCSC.CRC_CMS2_CMS_G
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+    source("functions/Calculate_bioactivity_scores.R")
     geneSets=getGmt("wpags_wpigs_r.gmt")
-    WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+    WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                            expression_profile=crc_data_all,
                                            foundation=c("relative_ssGSEA"),
                                            activation_geneset=NA,
@@ -4558,7 +4570,7 @@ save(robustness_delete_all_50,file="robustness_delete_all_50.Rdata")
 ###############################################visualisation
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 load("robustness_delete_all_50.Rdata")
 data_correct_all=data.frame()
 for(i in 1:length(names(robustness_delete_all_50))){
@@ -4596,7 +4608,7 @@ ggplot(data_correct_all, aes(x = Deletion, y = Correct, fill = Correct)) +
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector_all=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
              "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
              "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -4623,8 +4635,8 @@ for (exchange in 1:length(exchange_number)){
     group_HL$Group1_Status[HL] = group_HL$Group2_Status[HL]
     group_HL$Group2_Status[HL] = temp
     rm(temp)
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
-    up.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+    source("functions/Get_denovo_genesets.R")
+    up.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                            expression_accession_vector=vector,
                                            group_HL=group_HL,
                                            gene_difference_method=c("limma"),
@@ -4635,7 +4647,7 @@ for (exchange in 1:length(exchange_number)){
                                            gene_Pfilter=NA,
                                            gene_FCfilter=NA,
                                            export_file=F)
-    dn.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+    dn.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                            expression_accession_vector=vector,
                                            group_HL=group_HL,
                                            gene_difference_method=c("limma"),
@@ -4692,12 +4704,12 @@ for (exchange in 1:length(exchange_number)){
     })
     all_wnt_genesets=as.data.frame(all_wnt_genesets)
     save(all_wnt_genesets,file="all_wnt_genesets.Rdata")
-    load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+    load("input/all_wnt_genesets.Rdata")
     all_genesets=all_wnt_genesets[-1,]
     UP.genesets=all_genesets
     DN.genesets=all_genesets
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
-    UP.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/Desktop/input",
+    source("functions/Precise_cleaning_system.R")
+    UP.clean_genesets_rank=Precise_cleaning_system(file_paths="input",
                                                    expression_accession_vector=vector,
                                                    group_HL=group_HL,
                                                    gene_difference_method=c("limma"),
@@ -4717,7 +4729,7 @@ for (exchange in 1:length(exchange_number)){
                                                    min.sz=1,
                                                    max.sz=10000,
                                                    export_file=F)
-    DN.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/Desktop/input",
+    DN.clean_genesets_rank=Precise_cleaning_system(file_paths="input",
                                                    expression_accession_vector=vector,
                                                    group_HL=group_HL,
                                                    gene_difference_method=c("limma"),
@@ -4739,8 +4751,8 @@ for (exchange in 1:length(exchange_number)){
                                                    export_file=F)
     UP.clean_genesets=UP.clean_genesets_rank$update_activation_geneset
     DN.clean_genesets=DN.clean_genesets_rank$update_inhibition_geneset
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
-    joint_genesets=Joint_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+    source("functions/Joint_genesets.R")
+    joint_genesets=Joint_genesets(file_paths="input",
                                   activation_geneset=UP.clean_genesets,
                                   inhibition_geneset=DN.clean_genesets,
                                   delete_GN=T,
@@ -4781,14 +4793,14 @@ for (exchange in 1:length(exchange_number)){
       gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
       writeLines(gs.lines, con = file)
     }
-    write.gmt(wpags_wpigs,file="C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
-    load("C:/Users/赵定康/Desktop/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
-    load("C:/Users/赵定康/Desktop/exp_data/UCSC.CRC_CMS2_CMS_G.Rdata")
+    write.gmt(wpags_wpigs,file="input/wpags_wpigs_r.gmt")
+    load("exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+    load("exp_data/UCSC.CRC_CMS2_CMS_G.Rdata")
     crc_data_all=UCSC.CRC_CMS2_CMS
     info_cms=UCSC.CRC_CMS2_CMS_G
-    source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+    source("functions/Calculate_bioactivity_scores.R")
     geneSets=getGmt("wpags_wpigs_r.gmt")
-    WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+    WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                            expression_profile=crc_data_all,
                                            foundation=c("relative_ssGSEA"),
                                            activation_geneset=NA,
@@ -4838,7 +4850,7 @@ save(robustness_exchange_all_50,file="robustness_exchange_all_50.Rdata")
 ###############################################visualisation
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 load("robustness_exchange_all_50.Rdata")
 data_correct_all=data.frame()
 for(i in 1:length(names(robustness_exchange_all_50))){
