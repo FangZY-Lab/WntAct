@@ -1,4 +1,11 @@
-#single-cell
+# ==============================================================================
+# WntAct7 -- Single-cell and spatial analyses
+# ------------------------------------------------------------------------------
+# Purpose:    Resolve Wnt pathway activity at single-cell and spatial resolution using Seurat, harmony, and SCP-based workflows.
+# Inputs:     Single-cell RNA-seq object and cell metadata.
+# Outputs:    Cell-level Wnt activity annotations and visualizations.
+# ==============================================================================
+
 library(Seurat)
 library(harmony)
 library(mixOmics)
@@ -10,7 +17,7 @@ library(scales)
 
 set.seed(888)
 
-setwd("D:/deskup/dk/data/")
+setwd("data/")
 
 scRNA <- readRDS("seurat_obj.rds")
 metadata <- read.csv("Epithelial_metadata.csv")
