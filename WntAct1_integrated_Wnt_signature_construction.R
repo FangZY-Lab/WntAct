@@ -1,17 +1,13 @@
-#Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
-
 # ==============================================================================
 # WntAct1 -- Integrated Wnt signature construction
 # ------------------------------------------------------------------------------
-# Purpose:    Construct the integrated, direction-aware Wnt pathway signature
-#             (WntAct score) from curated activation (WPAGS) and inhibition
-#             (WPIGS) gene sets, with PCA-based training-data quality control.
+# Purpose:    Construct the integrated, direction-aware Wnt pathway signature (WntAct score) from curated activation (WPAGS) and inhibition (WPIGS) gene sets, with PCA-based training-data quality control.
 # Inputs:     Expression matrices and group annotations for 24 training cohorts.
 # Outputs:    Directional gene-set GMT files and per-sample Wnt activity scores.
+# NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.
 # ==============================================================================
 
 
-################################################################################PCA training data quality testing####
 rm(list=ls())
 gc()
 setwd("input")
@@ -65,7 +61,9 @@ for (i in 1:length(list)) {
   p
   ggsave(paste0(list[i],"_PCA",".pdf"), p, width = 5, height = 3)
 }
-################################################################################WNT gene set preparation####
+# ------------------------------------------------------------------------------
+# WNT gene set preparation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -117,7 +115,9 @@ if(length(rownames(WNT_knowledge))>=length(rownames(WNT_denovo))){
   WNT_knowledge = rbind(WNT_knowledge,empty)
   all_genesets=cbind(WNT_denovo,WNT_knowledge)
 }
-###########################################Add enrichr's gene set
+# ------------------------------------------------------------------------------
+# Add enrichr's gene set
+# ------------------------------------------------------------------------------
 files=c("WNT_enrichr1.gmt","WNT_enrichr2.gmt","WNT_enrichr3.gmt","WNT_enrichr4.gmt")
 combined_list=list()
 for (file in files) {  
@@ -160,7 +160,9 @@ write.gmt=function (gs.list, file) {
   writeLines(gs.lines, con = file)
 }
 write.gmt(all_genesets,file="input/all_genesets.gmt")
-################################################################################Cleaning the gene set####
+# ------------------------------------------------------------------------------
+# Cleaning the gene set
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -270,7 +272,9 @@ write.gmt=function (gs.list, file) {
 }
 write.gmt(wpags_wpigs,file="input/wpags_wpigs.gmt")
 save(joint_genesets,file="joint_genesets.Rdata")
-################################################################################Mining of significant genes####
+# ------------------------------------------------------------------------------
+# Mining of significant genes
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(dplyr)
@@ -324,7 +328,9 @@ ggplot(dn.p.matrix, aes(x = reorder(gene, -p_score), y = p_score, fill = p_score
   ) +  
   scale_fill_gradient(low = "#fffffb", high = "#90d7ec") +
   coord_flip()
-################################################################################fGSEA training data#####
+# ------------------------------------------------------------------------------
+# fGSEA training data
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -451,7 +457,9 @@ Heatmap(fgsea_all_transposed,
                                     annotation_name_gp = gpar(fontsize = 16)),  
         rect_gp = gpar(col = "#77787b", lwd = 1) 
 ) 
-################################################################################fGSEA validation data#####
+# ------------------------------------------------------------------------------
+# fGSEA validation data
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -593,7 +601,9 @@ Heatmap(fgsea_all_transposed,
                                     annotation_name_gp = gpar(fontsize = 16)),  
         rect_gp = gpar(col = "#77787b", lwd = 1) 
 ) 
-################################################################################Training dataset validation####
+# ------------------------------------------------------------------------------
+# Training dataset validation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -680,7 +690,9 @@ p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
   stat_compare_means(aes(group = Group, label = ..p.signif..), method="t.test") +
   ggtitle("Training datasets")
 p
-################################################################################Testing dataset validation####
+# ------------------------------------------------------------------------------
+# Testing dataset validation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -783,7 +795,9 @@ p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
   ggtitle("Testing datasets")+
   coord_flip() 
 p
-################################################################################PPI network####
+# ------------------------------------------------------------------------------
+# PPI network
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -813,7 +827,9 @@ dat_link=dat_link[dat_link$node1%in%activation_inhibition_geneset$gene,]
 dat_link=dat_link[dat_link$node2%in%activation_inhibition_geneset$gene,]
 write.csv(dat_link,'string_link.csv',row.names = F,quote = F)
 write.csv(activation_inhibition_geneset,'group_PPI.csv',row.names = F,quote = F)
-################################################################################Comparison of other signatures in the training datasets####
+# ------------------------------------------------------------------------------
+# Comparison of other signatures in the training datasets
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -921,7 +937,9 @@ ggplot(p_data_all, aes(dataset, geneset)) +
     legend.title = element_text(size = 16, color = "black")
   ) +
   labs(fill = paste0("Mean Difference"))
-################################################################################Comparison of other signatures in the testing datasets####
+# ------------------------------------------------------------------------------
+# Comparison of other signatures in the testing datasets
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
