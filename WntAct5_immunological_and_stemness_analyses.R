@@ -1,10 +1,21 @@
 #Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
+
+# ==============================================================================
+# WntAct5 -- Immunological and stemness analyses
+# ------------------------------------------------------------------------------
+# Purpose:    Link Wnt activity to immune subtypes, MSI status, stemness
+#             signatures, and the tumor microenvironment.
+# Inputs:     Pan-cancer Wnt activity scores and immune/stemness annotations.
+# Outputs:    Immunological and stemness association results.
+# ==============================================================================
+
+
 ################################################################################Comparison between different immunological subtypes of TCGA####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 Immune_subtype = read.table("Subtype_Immune_Model_Based.txt",header = T,sep = "\t",fill = F)
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("input/pancancer_WNT_Score.Rdata")
 immune_exp=merge(pancancer_WNT_Score$final_activity_score,Immune_subtype,by.x="row.names",by.y = "sample")
 immune_exp=immune_exp[,c("activity_score","Subtype_Immune_Model_Based")]
 table(immune_exp$Subtype_Immune_Model_Based)
@@ -46,8 +57,8 @@ p
 ################################################################################MSI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("input")
+load("input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 WNT_Score=WNT_Score[as.numeric(substr(rownames(WNT_Score), 14, 15)) <= 10, ]
 WNT_Score=as.matrix(WNT_Score)
@@ -108,7 +119,7 @@ gc()
 library(TCGAmutations)
 tcga_available()
 rm(list=ls())
-setwd("C:/Users/赵定康/Desktop/input/TMB")
+setwd("input/TMB")
 fs = c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
         "KICH","KIRC","KIRP","LAML","LGG","LIHC","LUAD","LUSC","MESO","OV",
         "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -117,17 +128,17 @@ lapply(fs,function(x){
   library(TCGAmutations)
   print(x)
   maf = TCGAmutations::tcga_load(study = x)
-  save(maf, file = paste0("C:/Users/赵定康/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
+  save(maf, file = paste0("input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
 })
 rm(list=ls())
-setwd("C:/Users/赵定康/Desktop/input/TMB")
+setwd("input/TMB")
 fs = c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
         "KICH","KIRC","KIRP","LAML","LGG","LIHC","LUAD","LUSC","MESO","OV",
         "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
         "UCEC","UCS","UVM")
 TCGAtmb = lapply(fs,function(x){
   library(maftools) 
-  load(paste0("C:/Users/赵定康/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
+  load(paste0("input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
   TMB = data.frame(tmb(maf = maf))
   TMB$Tumor_Sample_Barcode <- as.character(TMB$Tumor_Sample_Barcode)
   TMB$Group = x
@@ -141,7 +152,7 @@ TMB=TCGAtmb[,c(1,3,5)]
 rownames(TMB)=TMB[,1]
 TMB=TMB[,-1]
 save(TMB,file="TMB.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 WNT_Score_TMB=merge(WNT_Score,TMB,by = "row.names")
 WNT_Score_TMB$Group=ifelse(WNT_Score_TMB$Group%in%c("COAD","READ"),"CRC",WNT_Score_TMB$Group)
@@ -187,8 +198,8 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
 ################################################################################FGA####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("input")
+load("input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 library(cBioPortalData)
 cbio=cBioPortal()
@@ -254,8 +265,8 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
 ################################################################################mutation count####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("input")
+load("input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 library(cBioPortalData)
 cbio=cBioPortal()
@@ -321,12 +332,12 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
 ################################################################################Immune gene collation####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
 signature_tme_literatures=signature_tme
-load("C:/Users/赵定康/Desktop/input/tme_all_literatures.Rdata")
+load("input/tme_all_literatures.Rdata")
 tme_all=as.data.frame(tme_all_literatures)
-load("C:/Users/赵定康/Desktop/input/TARGET_G_all_literatures.Rdata")
+load("input/TARGET_G_all_literatures.Rdata")
 tme_all=rbind(as.data.frame(TARGET_G_all_literatures),tme_all)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
@@ -337,7 +348,7 @@ signature_tme_literatures=signature_tme_literatures[sig$Signatures]
 for(i in 1:length(signature_tme_literatures)) {  
   signature_tme_literatures[[i]] <- c(paste0("PMID:",sig$PMID[i]), signature_tme_literatures[[i]])  
 }  
-load("C:/Users/赵定康/Desktop/input/ssGSEA28.Rdata")
+load("input/ssGSEA28.Rdata")
 for(i in 1:length(cellMarker)) {  
   cellMarker[[i]] <- c(paste0("PMID:28052254"), cellMarker[[i]])  
 } 
@@ -352,17 +363,17 @@ write.gmt=function (gs.list, file) {
   gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
   writeLines(gs.lines, con = file)
 }
-write.gmt(signature_tme_literatures,file="C:/Users/赵定康/Desktop/signature_tme_literatures.gmt")
-write.gmt(cellMarker,file="C:/Users/赵定康/Desktop/cellMarker.gmt")
+write.gmt(signature_tme_literatures,file="./signature_tme_literatures.gmt")
+write.gmt(cellMarker,file="./cellMarker.gmt")
 ################################################################################TCGA immunoinfiltration analysis (literatures)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 signature_tme_literatures=signature_tme
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 fs=c("OV","ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
      "KICH","KIRC","KIRP","LGG","LIHC","LUAD","LUSC","MESO","LAML",
      "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -380,12 +391,12 @@ save(tme_all_literatures,file="tme_all_literatures.Rdata")
 ################################################################################TARGET immunoinfiltration analysis (literatures)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 signature_tme_literatures=signature_tme
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET.Rdata")
 fs=c("AML","ALL_P1","ALL_P2","ALL_P3","CCSK","NBL","OS","RT","WT")
 TARGET_G_all_literatures=data.frame()
 for(i in 1:length(fs)){
@@ -401,21 +412,21 @@ save(TARGET_G_all_literatures,file="TARGET_G_all_literatures.Rdata")
 rm(list=ls())
 gc()
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/tme_all_literatures.Rdata")
+load("input/tme_all_literatures.Rdata")
 tme_all=as.data.frame(tme_all_literatures)
-load("C:/Users/赵定康/Desktop/input/TARGET_G_all_literatures.Rdata")
+load("input/TARGET_G_all_literatures.Rdata")
 tme_all=rbind(as.data.frame(TARGET_G_all_literatures),tme_all)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
 sig=signature_collection_citation[c(19:54,127:141,282:314),]
 tme_all=tme_all[,intersect(sig$Signatures,colnames(tme_all))]
 sig=sig[sig$Signatures%in%colnames(tme_all),]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_score.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/TARGET_WNT_score.Rdata")
 pancancer_wnt=rbind(pancancer_WNT_Score$final_activity_score,TARGET_WNT_Score$final_activity_score)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
@@ -464,13 +475,13 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 ################################################################################TCGA immunoinfiltration analysis (cellmarker)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/ssGSEA28.Rdata")
+load("input/ssGSEA28.Rdata")
 names(cellMarker)=paste0(gsub(" ", "_", names(cellMarker)), "_cellMarker")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 fs=c("OV","ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
      "KICH","KIRC","KIRP","LGG","LIHC","LUAD","LUSC","MESO","LAML",
      "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -488,13 +499,13 @@ save(tme_all_cellMarker,file="tme_all_cellMarker.Rdata")
 ################################################################################TARGET immunoinfiltration analysis (cellmarker)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/ssGSEA28.Rdata")
+load("input/ssGSEA28.Rdata")
 names(cellMarker)=paste0(gsub(" ", "_", names(cellMarker)), "_cellMarker")
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET.Rdata")
 fs=c("AML","ALL_P1","ALL_P2","ALL_P3","CCSK","NBL","OS","RT","WT")
 TARGET_all_cellMarker=data.frame()
 for(i in 1:length(fs)){
@@ -509,19 +520,19 @@ save(TARGET_all_cellMarker,file="TARGET_all_cellMarker.Rdata")
 ################################################################################WNT-immunocellmarker correlation analysis####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_cellMarker.Rdata")
+load("input/tme_all_cellMarker.Rdata")
 tme_all=as.data.frame(tme_all_cellMarker)
-load("C:/Users/赵定康/Desktop/input/TARGET_all_cellMarker.Rdata")
+load("input/TARGET_all_cellMarker.Rdata")
 tme_all=rbind(tme_all,as.data.frame(TARGET_all_cellMarker))
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
 tme_all_cellMarker=tme_all[,grep("_cellMarker", colnames(tme_all), value = TRUE)]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_score.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/TARGET_WNT_score.Rdata")
 pancancer_wnt=rbind(pancancer_WNT_Score$final_activity_score,TARGET_WNT_Score$final_activity_score)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
@@ -573,10 +584,10 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 rm(list=ls())
 gc()
 library(TCellSI)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("input")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 fs=c("OV","ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
      "KICH","KIRC","KIRP","LGG","LIHC","LUAD","LUSC","MESO","LAML",
      "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -596,10 +607,10 @@ save(tme_all_TCSS,file="tme_all_TCSS.Rdata")
 rm(list=ls())
 gc()
 library(TCellSI)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+setwd("input")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET.Rdata")
 fs=c("AML","ALL_P1","ALL_P2","ALL_P3","CCSK","NBL","OS","RT","WT")
 TARGET_all_TCSS=data.frame()
 for(i in 1:length(fs)){
@@ -615,16 +626,16 @@ save(TARGET_all_TCSS,file="TARGET_all_TCSS.Rdata")
 ################################################################################WNT-T cell status correlation analysis####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_TCSS.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_all_TCSS.Rdata")
+load("input/tme_all_TCSS.Rdata")
+load("input/TARGET_all_TCSS.Rdata")
 T_status=tme_all_TCSS
 T_status=rbind(T_status,TARGET_all_TCSS)
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_score.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/TARGET_WNT_score.Rdata")
 pancancer_wnt=rbind(pancancer_WNT_Score$final_activity_score,TARGET_WNT_Score$final_activity_score)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
@@ -710,11 +721,11 @@ Dotplot2
 ################################################################################TCGA immuno-infiltration analysis (ESTMATE)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 fs=c("OV","ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
      "KICH","KIRC","KIRP","LGG","LIHC","LUAD","LUSC","MESO","LAML",
      "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -732,11 +743,11 @@ save(tme_all_estimate,file="tme_all_estimate.Rdata")
 ################################################################################TARGET immuno-infiltration analysis (ESTMATE)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET.Rdata")
 fs=c("AML","ALL_P1","ALL_P2","ALL_P3","CCSK","NBL","OS","RT","WT")
 TARGET_all_estimate=data.frame()
 for(i in 1:length(fs)){
@@ -751,18 +762,18 @@ save(TARGET_all_estimate,file="TARGET_all_estimate.Rdata")
 ################################################################################ESTIMATE correlation analysis of WNT-immunity####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_estimate.Rdata")
+load("input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
-load("C:/Users/赵定康/Desktop/input/TARGET_all_estimate.Rdata")
+load("input/TARGET_all_estimate.Rdata")
 tme_all=rbind(as.data.frame(TARGET_all_estimate),tme_all)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_score.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/TARGET_WNT_score.Rdata")
 pancancer_wnt=rbind(pancancer_WNT_Score$final_activity_score,TARGET_WNT_Score$final_activity_score)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
@@ -857,7 +868,7 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
 ################################################################################Correlation analysis of WNT-Immunomodulator/Chemokine####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 Chemokinegene=read.delim("Chemokine.txt",header=TRUE,sep='\t',check.names=F)
 colnames(Chemokinegene)="gene"
 Immunomodulatorgene=read.delim("Immunomodulator.txt",header=TRUE,sep='\t',check.names=F)
@@ -865,19 +876,19 @@ colnames(Immunomodulatorgene)="gene"
 Chemokine_Immunomodulator=rbind(Immunomodulatorgene,Chemokinegene)
 Chemokine_Immunomodulator=as.data.frame(unique(Chemokine_Immunomodulator$gene))
 Chemokine_Immunomodulator=Chemokine_Immunomodulator[order(Chemokine_Immunomodulator$`unique(Chemokine_Immunomodulator$gene)`),,drop=F]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/pancancer_exp.Rdata")
+load("input/TARGET.Rdata")
 pancancer_exp=merge(pancancer_exp,TARGET,by="row.names")
 rownames(pancancer_exp)=pancancer_exp[,1]
 pancancer_exp=pancancer_exp[,-1]
 wntgene_exp=pancancer_exp[intersect(Chemokine_Immunomodulator$`unique(Chemokine_Immunomodulator$gene)`,rownames(pancancer_exp)),]
 wntgene_exp=as.data.frame(t(wntgene_exp))
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_score.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/TARGET_WNT_score.Rdata")
 pancancer_wnt=rbind(pancancer_WNT_Score$final_activity_score,TARGET_WNT_Score$final_activity_score)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
@@ -926,20 +937,20 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 ################################################################################Collation of available pan-cancer TIDE data####
 rm(list=ls())
 gc()
-folder_path = "C:/Users/赵定康/Desktop/input/TIDE/Results/Tumor_Dysf_Excl_scores"    
+folder_path = "input/TIDE/Results/Tumor_Dysf_Excl_scores"    
 file_names = list.files(folder_path, pattern = "TCGA.*\\.txt$", full.names = TRUE)  
 data_list = lapply(file_names, read.table, header = TRUE)  
 tide_all = do.call(rbind, data_list)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 save(tide_all,file="tide_all.Rdata")
 ################################################################################Correlation analysis of WNT-tide####
 rm(list=ls())
 gc()
 library(limma)
-load("C:/Users/赵定康/Desktop/input/tide_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/tide_all.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("input/pancancer_WNT_Score.Rdata")
 pancancer_WNT_score=pancancer_WNT_Score$final_activity_score[rownames(pancancer_group),]
 pancancer_WNT_score=as.matrix(pancancer_WNT_score)
 rownames(pancancer_WNT_score)=substr(rownames(pancancer_WNT_score), 1, 12)
@@ -1036,12 +1047,12 @@ Dotplot2
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+setwd("input")
+load("input/IMvigor.Rdata")
 IMvigor=log2(IMvigor+1)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=IMvigor,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -1056,10 +1067,10 @@ save(IMvigor_WNT_score,file="IMvigor_WNT_score.Rdata")
 ################################################################################PDCD1/CD274 correlations####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("input/IMvigor.Rdata")
 IMvigor_PD=IMvigor[c("PDCD1","CD274"),]
 IMvigor_PD=as.data.frame(t(IMvigor_PD))
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_pd=merge(IMvigor_WNT_score,IMvigor_PD,by="row.names")
 library(ggplot2)
 library(ggExtra)
@@ -1111,8 +1122,8 @@ p2
 ################################################################################Prognostic analysis####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score$final_activity_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 wnt_IMvigor=wnt_IMvigor[wnt_IMvigor$`Immune phenotype`=="desert",]
@@ -1162,10 +1173,10 @@ print(p)
 ################################################################################Comparison of desert multi-indicator prognosis####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+setwd("input")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor.Rdata")
 IMvigor=as.data.frame(t(IMvigor))
 wnt_IMvigor=merge(IMvigor,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ] 
@@ -1279,8 +1290,8 @@ ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
 ################################################################################Immunotherapy 1####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[,c("activity_score","Best Confirmed Overall Response")]
 wnt_IMvigor=na.omit(wnt_IMvigor)
@@ -1321,8 +1332,8 @@ p
 ################################################################################Immunotherapy 2####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[,c("activity_score","binaryResponse")]
 wnt_IMvigor=na.omit(wnt_IMvigor)
@@ -1360,8 +1371,8 @@ p
 ################################################################################Immunotherapy 3####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[,c("activity_score","IC Level")]
 wnt_IMvigor=na.omit(wnt_IMvigor)
@@ -1400,8 +1411,8 @@ p
 ################################################################################Immunotherapy 4####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[,c("activity_score","TC Level")]
 wnt_IMvigor=na.omit(wnt_IMvigor)
@@ -1440,8 +1451,8 @@ p
 ################################################################################Immunotherapy 5####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[,c("activity_score","Immune phenotype")]
 wnt_IMvigor=na.omit(wnt_IMvigor)
@@ -1480,8 +1491,8 @@ p
 ################################################################################Immunotherapy for different immune phenotypes####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor_WNT_score.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score,phenoData,by="row.names")
 wnt_IMvigor=wnt_IMvigor[,c("activity_score","binaryResponse","Immune phenotype")]
 colnames(wnt_IMvigor)=c("activity_score","Response","Immune phenotype")
@@ -1513,10 +1524,10 @@ p
 ################################################################################Immunotherapy GSE91061####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 exp=read.csv(file = "GSE91061_BMS038109Sample.hg19KnownGene.raw.csv")
 Cytolytic=read.delim(file = "GSE91061_BMS038109Sample_Cytolytic_Score_20161026.txt")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+load("input/IMvigor210CoreBiologies.Rdata")
 rm(exprSet)
 rm(phenoData)
 annoData1=annoData[,c(1,2)]
@@ -1555,8 +1566,8 @@ GSE91061=as.data.frame(log2(mat_tpm.filtered+1))
 GSE91061 = GSE91061[rowSums(GSE91061)>0,]
 library(GSEABase)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=GSE91061,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -1639,9 +1650,9 @@ p
 rm(list=ls())
 gc()
 library(openxlsx)
-setwd("C:/Users/赵定康/Desktop/input")
-stem1=read.xlsx("肿瘤细胞干性经典文献_PNAS_2019_109个基因.xlsx", sheet=1)
-stem2=read.xlsx("肿瘤细胞干性经典文献_PNAS_2019_109个基因.xlsx", sheet=2)
+setwd("input")
+stem1=read.xlsx("tumor_stemness_PNAS_2019_109_genes.xlsx", sheet=1)
+stem2=read.xlsx("tumor_stemness_PNAS_2019_109_genes.xlsx", sheet=2)
 stem3=read.xlsx("13287_2022_2913_MOESM2_ESM.xlsx", sheet=1)
 stem1 = lapply(stem1, function(x) na.omit(x)) 
 stem2 = lapply(stem2, function(x) na.omit(x)) 
@@ -1659,19 +1670,19 @@ write.gmt=function (gs.list, file) {
   gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
   writeLines(gs.lines, con = file)
 }
-write.gmt(stem,file="C:/Users/赵定康/Desktop/input/stemness.gmt")
+write.gmt(stem,file="input/stemness.gmt")
 ################################################################################TCGA pan-cancer stemness analysis####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
 library(GSEABase)
 stemness=getGmt("stemness.gmt")
 stemness_gmt=lapply(stemness, function(x){ x@geneIds })
 names(stemness_gmt)=names(stemness)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 fs=c("OV","ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
      "KICH","KIRC","KIRP","LGG","LIHC","LUAD","LUSC","MESO","LAML",
      "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -1689,15 +1700,15 @@ save(tme_all_stemness,file="tme_all_stemness.Rdata")
 ################################################################################TARGET pan-cancer stemness analysis####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(IOBR)
 library(GSEABase)
 stemness=getGmt("stemness.gmt")
 stemness_gmt=lapply(stemness, function(x){ x@geneIds })
 names(stemness_gmt)=names(stemness)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
+load("input/TARGET.Rdata")
 fs=c("AML","ALL_P1","ALL_P2","ALL_P3","CCSK","NBL","OS","RT","WT")
 TARGET_all_stemness=data.frame()
 for(i in 1:length(fs)){
@@ -1712,18 +1723,18 @@ save(TARGET_all_stemness,file="TARGET_all_stemness.Rdata")
 ################################################################################Correlation analysis of stemness####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_stemness.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_all_stemness.Rdata")
+load("input/tme_all_stemness.Rdata")
+load("input/TARGET_all_stemness.Rdata")
 tme_all=as.data.frame(tme_all_stemness)
 tme_all=rbind(tme_all,as.data.frame(TARGET_all_stemness))
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_score.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/TARGET_WNT_score.Rdata")
 pancancer_wnt=rbind(pancancer_WNT_Score$final_activity_score,TARGET_WNT_Score$final_activity_score)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
@@ -1773,9 +1784,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 rm(list=ls())
 gc()
 library(readxl)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 RNA <- read_excel("1-s2.0-S0092867418303581-mmc1.xlsx", sheet = "StemnessScores_RNAexp")[,-c(2,3)]
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 RNA$TCGAlong.id=substr(RNA$TCGAlong.id,1,15)
 colnames(RNA)
 WNT=merge(RNA,pancancer_cluster,by.x="TCGAlong.id",by.y="Tag")
@@ -1816,9 +1827,9 @@ print(p)
 rm(list=ls())
 gc()
 library(readxl)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 DNA=read_excel("1-s2.0-S0092867418303581-mmc1.xlsx", sheet = "StemnessScores_DNAmeth")[,-c(2,3)]
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("input/pancancer_cluster.Rdata")
 DNA$TCGAlong.id=substr(DNA$TCGAlong.id,1,15)
 colnames(DNA)
 WNT=merge(DNA,pancancer_cluster,by.x="TCGAlong.id",by.y="Tag")
@@ -1859,17 +1870,17 @@ print(p)
 ################################################################################Multiple immunotherapy data sets and calculations####
 rm(list = ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-PRJNA482620_GBM=readRDS("C:/Users/赵定康/Desktop/input/GBM-PRJNA482620.Response.Rds")
-GSE93157_LUSC=readRDS("C:/Users/赵定康/Desktop/input/LUSC-GSE93157.Response.Rds")
-GSE78220_Melanoma=readRDS("C:/Users/赵定康/Desktop/input/Melanoma-GSE78220.Response.Rds")
-GSE93157_Melanoma=readRDS("C:/Users/赵定康/Desktop/input/Melanoma-GSE93157.Response.Rds")
-GSE96619_Melanoma=readRDS("C:/Users/赵定康/Desktop/input/Melanoma-GSE96619.Response.Rds")
-phs000452_Melanoma=readRDS("C:/Users/赵定康/Desktop/input/Melanoma-phs000452.Response.Rds")
-GSE93157_NSCLC=readRDS("C:/Users/赵定康/Desktop/input/nonsqNSCLC-GSE93157.Response.Rds")
-GSE126044_NSCLC=readRDS("C:/Users/赵定康/Desktop/input/NSCLC_GSE126044.Response.Rds")
-GSE135222_NSCLC=readRDS("C:/Users/赵定康/Desktop/input/NSCLC_GSE135222.Response.Rds")
-PRJEB25780_STAD=readRDS("C:/Users/赵定康/Desktop/input/STAD-PRJEB25780.Response.Rds")
+setwd("input")
+PRJNA482620_GBM=readRDS("input/GBM-PRJNA482620.Response.Rds")
+GSE93157_LUSC=readRDS("input/LUSC-GSE93157.Response.Rds")
+GSE78220_Melanoma=readRDS("input/Melanoma-GSE78220.Response.Rds")
+GSE93157_Melanoma=readRDS("input/Melanoma-GSE93157.Response.Rds")
+GSE96619_Melanoma=readRDS("input/Melanoma-GSE96619.Response.Rds")
+phs000452_Melanoma=readRDS("input/Melanoma-phs000452.Response.Rds")
+GSE93157_NSCLC=readRDS("input/nonsqNSCLC-GSE93157.Response.Rds")
+GSE126044_NSCLC=readRDS("input/NSCLC_GSE126044.Response.Rds")
+GSE135222_NSCLC=readRDS("input/NSCLC_GSE135222.Response.Rds")
+PRJEB25780_STAD=readRDS("input/STAD-PRJEB25780.Response.Rds")
 datasets=c("PRJNA482620_GBM","GSE78220_Melanoma","GSE96619_Melanoma","phs000452_Melanoma","GSE126044_NSCLC","GSE135222_NSCLC","PRJEB25780_STAD")
 plots=list() 
 for (i in 1:length(datasets)){
@@ -1888,8 +1899,8 @@ for (i in 1:length(datasets)){
   exp=log2(exp+1)
   library(GSEABase)
   geneSets=getGmt("wpags_wpigs.gmt")
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  source("functions/Calculate_bioactivity_scores.R")
+  WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                          expression_profile=exp,
                                          foundation="relative_ssGSEA",
                                          activation_geneset=NA,
@@ -1957,9 +1968,9 @@ grid.arrange(grobs = plots, ncol =4)
 rm(list=ls())
 gc()
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("input/pancancer_exp.Rdata")
 fs=c("OV","ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
      "KICH","KIRC","KIRP","LGG","LIHC","LUAD","LUSC","MESO",
      "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -1977,12 +1988,12 @@ save(tme_all_timer,file="tme_all_timer.Rdata")
 ################################################################################Visualisation of Timer algorithm results####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_timer.Rdata")
+load("input/tme_all_timer.Rdata")
 tme_all=as.data.frame(tme_all_timer)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("input/pancancer_WNT_score.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 pancancer_group=pancancer_group[rownames(tme_all),]
 fs=unique(pancancer_group$Project)
@@ -2034,11 +2045,11 @@ p
 rm(list=ls())
 gc()
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+setwd("input")
+load("input/IMvigor210CoreBiologies.Rdata")
 rm(annoData)
 rm(exprSet)
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("input/IMvigor.Rdata")
 IMvigor=log2(IMvigor+1)
 im_xcell=deconvo_tme(eset = IMvigor, method = "xcell")
 im_xcell=as.data.frame(im_xcell)
@@ -2058,8 +2069,8 @@ save(xcell_pheno,file="xcell_pheno.Rdata")
 ################################################################################lasso regression construction####
 rm(list = ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/xcell_pheno.Rdata")
+setwd("input")
+load("input/xcell_pheno.Rdata")
 library(glmnet)
 library(caret)
 library(pROC) 
@@ -2250,7 +2261,7 @@ gc()
 library(dplyr)
 library(IOBR)
 library(stringr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 exp=read.delim("GSE19423_GPL6102_1_13_1_Matrix.matrix.txt")
 rownames(exp)=exp[,1]
 exp=exp[,-1]
@@ -2261,7 +2272,7 @@ rownames(im_timer)=im_timer[,1]
 im_timer=im_timer[,-1]
 colnames(im_timer) = gsub("_xCell$", "", colnames(im_timer))
 im_timer = as.data.frame(scale(im_timer))
-load("C:/Users/赵定康/Desktop/input/lasso_model.Rdata")
+load("input/lasso_model.Rdata")
 im_timer$subtype = predict(object = lasso_model, 
                             newdata = as.matrix(im_timer))
 table(im_timer$subtype)
@@ -2269,8 +2280,8 @@ im_timer=im_timer[im_timer$subtype=="cold",]
 exp=exp[,rownames(im_timer)]
 library(GSEABase)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
