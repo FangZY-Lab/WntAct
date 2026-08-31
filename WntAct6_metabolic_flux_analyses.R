@@ -1,11 +1,22 @@
 #Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
+
+# ==============================================================================
+# WntAct6 -- Metabolic flux analyses
+# ------------------------------------------------------------------------------
+# Purpose:    Infer metabolic flux (METAFlux) and link Wnt activity to metabolic
+#             reprogramming across cell lines and tumor cohorts.
+# Inputs:     Expression matrices (TCGA, TARGET, GDSC, CCLE, CTRP) and Wnt scores.
+# Outputs:    Metabolic flux scores and pathway-level activity estimates.
+# ==============================================================================
+
+
 ################################################################################TCGA####
 rm(list=ls())
 gc()
 library(METAFlux)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("input")
+load("input/pancancer_exp.Rdata")
+load("input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 pancancer_exp=pancancer_exp[,rownames(pancancer_group)]
 scores=calculate_reaction_score(pancancer_exp)
@@ -13,7 +24,7 @@ metabolism_scores=scores
 data("human_blood")
 flux=compute_flux(mras=scores,medium=human_blood)
 metabolism_flux=flux
-load("C:/Users/赵定康/Desktop/input/metabolism_flux.Rdata")
+load("input/metabolism_flux.Rdata")
 flux=metabolism_flux
 cbrt=function(x){
   sign(x)*abs(x)^(1/3)
@@ -38,9 +49,9 @@ save(TCGA_metabolism,file="TCGA_metabolism.Rdata")
 rm(list=ls())
 gc()
 library(METAFlux)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TARGET.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_G.Rdata")
+setwd("input")
+load("input/TARGET.Rdata")
+load("input/TARGET_G.Rdata")
 TARGET_G=TARGET_G[TARGET_G$Group=="Tumor",]
 TARGET=TARGET[,rownames(TARGET_G)]
 scores=calculate_reaction_score(TARGET)
@@ -69,8 +80,8 @@ save(TARGET_metabolism,file="TARGET_metabolism.Rdata")
 rm(list=ls())
 gc()
 library(METAFlux)
-setwd("C:/Users/赵定康/Desktop/input")
-GDSC1_exp=readRDS("C:/Users/赵定康/Desktop/input/DataFiles/DataFiles/Training Data/GDSC1_Expr (RMA Normalized and Log Transformed).rds")
+setwd("input")
+GDSC1_exp=readRDS("input/DataFiles/DataFiles/Training Data/GDSC1_Expr (RMA Normalized and Log Transformed).rds")
 scores=calculate_reaction_score(GDSC1_exp)
 metabolism_scores=scores
 data("cell_medium")
@@ -98,8 +109,8 @@ save(GDSC1_metabolism,file="GDSC1_metabolism.Rdata")
 rm(list=ls())
 gc()
 library(METAFlux)
-setwd("C:/Users/赵定康/Desktop/input")
-GDSC2_exp=readRDS("C:/Users/赵定康/Desktop/input/DataFiles/DataFiles/Training Data/GDSC2_Expr (RMA Normalized and Log Transformed).rds")
+setwd("input")
+GDSC2_exp=readRDS("input/DataFiles/DataFiles/Training Data/GDSC2_Expr (RMA Normalized and Log Transformed).rds")
 scores=calculate_reaction_score(GDSC2_exp)
 metabolism_scores=scores
 data("cell_medium")
@@ -127,8 +138,8 @@ save(GDSC2_metabolism,file="GDSC2_metabolism.Rdata")
 rm(list=ls())
 gc()
 library(METAFlux)
-setwd("C:/Users/赵定康/Desktop/input")
-CTRP_exp=readRDS("C:/Users/赵定康/Desktop/input/DataFiles/DataFiles/Training Data/CTRP2_Expr (TPM, not log transformed).rds")
+setwd("input")
+CTRP_exp=readRDS("input/DataFiles/DataFiles/Training Data/CTRP2_Expr (TPM, not log transformed).rds")
 CTRP_exp=log2(CTRP_exp+1)
 scores=calculate_reaction_score(CTRP_exp)
 metabolism_scores=scores
@@ -157,8 +168,8 @@ save(CTRP_metabolism,file="CTRP_metabolism.Rdata")
 rm(list=ls())
 gc()
 library(METAFlux)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/CCLE_exp.Rdata")
+setwd("input")
+load("input/CCLE_exp.Rdata")
 scores=calculate_reaction_score(CCLE_exp)
 metabolism_scores=scores
 data("cell_medium")
@@ -185,16 +196,16 @@ save(CCLE_metabolism,file="CCLE_metabolism.Rdata")
 ################################################################################xgboost####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(shapviz)
 library(xgboost)
 library(ggplot2)
 library(caret)
 library(Matrix)
-load("C:/Users/赵定康/Desktop/input/TCGA_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_Score.Rdata")
+load("input/TCGA_metabolism.Rdata")
+load("input/TARGET_metabolism.Rdata")
+load("input/pancancer_WNT_Score.Rdata")
+load("input/TARGET_WNT_Score.Rdata")
 TCGA=merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F], 
            as.data.frame(t(TCGA_metabolism)), by="row.names")
 rownames(TCGA)=TCGA[,1]
@@ -282,8 +293,8 @@ colnames(impor) = "XGBoost"
 xgboost_impor = impor
 save(xgboost_impor, file = "xgboost_impor.Rdata")
 ##############TARGET
-load("C:/Users/赵定康/Desktop/input/TARGET_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/TARGET_WNT_Score.Rdata")
+load("input/TARGET_metabolism.Rdata")
+load("input/TARGET_WNT_Score.Rdata")
 TARGET=merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
              as.data.frame(t(TARGET_metabolism)), by="row.names")
 rownames(TARGET)=TARGET[,1]
@@ -313,8 +324,8 @@ p=ggscatter(TARGET_pred, x = "pred", y = "activity_score",
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
 ##############GDSC1
-load("C:/Users/赵定康/Desktop/input/GDSC1_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/GDSC1_WNT_score.Rdata")
+load("input/GDSC1_metabolism.Rdata")
+load("input/GDSC1_WNT_score.Rdata")
 GDSC1=merge(GDSC1_WNT_score[,c(1),drop=F], 
             as.data.frame(t(GDSC1_metabolism)), by="row.names")
 rownames(GDSC1)=GDSC1[,1]
@@ -344,8 +355,8 @@ p=ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
 ##############GDSC2
-load("C:/Users/赵定康/Desktop/input/GDSC2_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/GDSC2_WNT_score.Rdata")
+load("input/GDSC2_metabolism.Rdata")
+load("input/GDSC2_WNT_score.Rdata")
 GDSC2=merge(GDSC2_WNT_score[,c(1),drop=F], 
             as.data.frame(t(GDSC2_metabolism)), by="row.names")
 rownames(GDSC2)=GDSC2[,1]
@@ -375,8 +386,8 @@ p=ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
 ##############CCLE
-load("C:/Users/赵定康/Desktop/input/CCLE_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/CCLE_WNT_score.Rdata")
+load("input/CCLE_metabolism.Rdata")
+load("input/CCLE_WNT_score.Rdata")
 CCLE=merge(CCLE_WNT_score[,c(1),drop=F], 
            as.data.frame(t(CCLE_metabolism)), by="row.names")
 rownames(CCLE)=CCLE[,1]
@@ -406,8 +417,8 @@ p=ggscatter(CCLE_pred, x = "pred", y = "activity_score",
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
 ##############CTRP
-load("C:/Users/赵定康/Desktop/input/CTRP_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/CTRP_WNT_score.Rdata")
+load("input/CTRP_metabolism.Rdata")
+load("input/CTRP_WNT_score.Rdata")
 CTRP=merge(CTRP_WNT_score[,c(1),drop=F], 
            as.data.frame(t(CTRP_metabolism)), by="row.names")
 rownames(CTRP)=CTRP[,1]
@@ -441,7 +452,7 @@ save(xgboost_fit,file="xgboost_fit.Rdata")
 ################################################################################lightgbm####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(shapviz)
 library(lightgbm)
 library(ggplot2)
@@ -727,7 +738,7 @@ save(lightgbm_fit,file="lightgbm_fit.Rdata")
 ################################################################################rf####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(shapviz)
 library(treeshap)
 library(ranger)
@@ -975,7 +986,7 @@ save(rf_fit,file="rf_fit.Rdata")
 ################################################################################catboost####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(shapviz)
 library(catboost)
 library(ggplot2)
@@ -1263,11 +1274,11 @@ save(catboost_fit,file="catboost_fit.Rdata")
 ################################################################################visualisation####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/xgboost_impor.Rdata")
-load("C:/Users/赵定康/Desktop/input/lightgbm_impor.Rdata")
-load("C:/Users/赵定康/Desktop/input/rf_impor.Rdata")
-load("C:/Users/赵定康/Desktop/input/catboost_impor.Rdata")
+setwd("input")
+load("input/xgboost_impor.Rdata")
+load("input/lightgbm_impor.Rdata")
+load("input/rf_impor.Rdata")
+load("input/catboost_impor.Rdata")
 ML_importance=merge(xgboost_impor,lightgbm_impor,by="row.names")
 ML_importance=merge(ML_importance,rf_impor,by.x="Row.names",by.y="row.names")
 ML_importance=merge(ML_importance,catboost_impor,by.x="Row.names",by.y="row.names")
@@ -1276,7 +1287,7 @@ ML_importance=as.data.frame(scale(ML_importance[,-1]))
 ML_importance$importance=rowMeans(ML_importance)
 ML_importance=ML_importance[order(-ML_importance$importance),]
 library(openxlsx)
-setwd("C:/Users/赵定康/Desktop")
+setwd(".")
 write.xlsx(ML_importance, "Table S8.xlsx", rowNames = TRUE, colNames = TRUE)
 heatmap_data=as.matrix(ML_importance[, -which(colnames(ML_importance) == "importance")])
 ML_importance$feature=rownames(heatmap_data)
