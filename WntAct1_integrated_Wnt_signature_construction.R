@@ -1,8 +1,20 @@
 #Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
+
+# ==============================================================================
+# WntAct1 -- Integrated Wnt signature construction
+# ------------------------------------------------------------------------------
+# Purpose:    Construct the integrated, direction-aware Wnt pathway signature
+#             (WntAct score) from curated activation (WPAGS) and inhibition
+#             (WPIGS) gene sets, with PCA-based training-data quality control.
+# Inputs:     Expression matrices and group annotations for 24 training cohorts.
+# Outputs:    Directional gene-set GMT files and per-sample Wnt activity scores.
+# ==============================================================================
+
+
 ################################################################################PCA training data quality testing####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 list=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
        "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
        "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -56,7 +68,7 @@ for (i in 1:length(list)) {
 ################################################################################WNT gene set preparation####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -67,8 +79,8 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_G.Rdata"))
 }
 group_HL=read.delim("WNT_HL.txt",header=TRUE,sep='\t',check.names=F)
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
-up.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Get_denovo_genesets.R")
+up.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                        expression_accession_vector=vector,
                                        group_HL=group_HL,
                                        gene_difference_method=c("limma"),
@@ -79,7 +91,7 @@ up.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/in
                                        gene_Pfilter=NA,
                                        gene_FCfilter=NA,
                                        export_file=F)
-dn.denovo_genesets=Get_denovo_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+dn.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                        expression_accession_vector=vector,
                                        group_HL=group_HL,
                                        gene_difference_method=c("limma"),
@@ -147,12 +159,12 @@ write.gmt=function (gs.list, file) {
   gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
   writeLines(gs.lines, con = file)
 }
-write.gmt(all_genesets,file="C:/Users/赵定康/Desktop/input/all_genesets.gmt")
+write.gmt(all_genesets,file="input/all_genesets.gmt")
 ################################################################################Cleaning the gene set####
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -162,13 +174,13 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
   load(paste0(vector[q],"_G.Rdata"))
 }
-load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+load("input/all_wnt_genesets.Rdata")
 all_genesets=all_wnt_genesets[-1,]
 UP.genesets=all_genesets
 DN.genesets=all_genesets
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+source("functions/Precise_cleaning_system.R")
 group_HL=read.delim("WNT_HL.txt",header=TRUE,sep='\t',check.names=F)
-UP.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/Desktop/input",
+UP.clean_genesets_rank=Precise_cleaning_system(file_paths="input",
                                                expression_accession_vector=vector,
                                                group_HL=group_HL,
                                                gene_difference_method=c("limma"),
@@ -190,7 +202,7 @@ UP.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/De
                                                export_file=F)
 up.p.matrix=UP.clean_genesets_rank$cleaning_system
 save(up.p.matrix,file="up.p.matrix.Rdata")
-DN.clean_genesets_rank=Precise_cleaning_system(file_paths="C:/Users/赵定康/Desktop/input",
+DN.clean_genesets_rank=Precise_cleaning_system(file_paths="input",
                                                expression_accession_vector=vector,
                                                group_HL=group_HL,
                                                gene_difference_method=c("limma"),
@@ -214,8 +226,8 @@ dn.p.matrix=DN.clean_genesets_rank$cleaning_system
 save(dn.p.matrix,file="dn.p.matrix.Rdata")
 UP.clean_genesets=UP.clean_genesets_rank$update_activation_geneset
 DN.clean_genesets=DN.clean_genesets_rank$update_inhibition_geneset
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
-joint_genesets=Joint_genesets(file_paths="C:/Users/赵定康/Desktop/input",
+source("functions/Joint_genesets.R")
+joint_genesets=Joint_genesets(file_paths="input",
                               activation_geneset=UP.clean_genesets,
                               inhibition_geneset=DN.clean_genesets,
                               delete_GN=T,
@@ -256,15 +268,15 @@ write.gmt=function (gs.list, file) {
   gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
   writeLines(gs.lines, con = file)
 }
-write.gmt(wpags_wpigs,file="C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
+write.gmt(wpags_wpigs,file="input/wpags_wpigs.gmt")
 save(joint_genesets,file="joint_genesets.Rdata")
 ################################################################################Mining of significant genes####
 rm(list=ls())
 gc()
 library(dplyr)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/up.p.matrix.Rdata")
-load("C:/Users/赵定康/Desktop/input/dn.p.matrix.Rdata")
+setwd("input")
+load("input/up.p.matrix.Rdata")
+load("input/dn.p.matrix.Rdata")
 up.p.matrix=up.p.matrix[1:150,length(colnames(up.p.matrix)),drop=F]
 up.p.matrix$gene=rownames(up.p.matrix)
 dn.p.matrix=dn.p.matrix[1:150,length(colnames(dn.p.matrix)),drop=F]
@@ -318,7 +330,7 @@ gc()
 library(GSEABase)
 library(limma)
 library(dplyr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -445,7 +457,7 @@ gc()
 library(GSEABase)
 library(limma)
 library(dplyr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
          "GSE158578_b","GSE188465","GSE188466",
@@ -585,7 +597,7 @@ Heatmap(fgsea_all_transposed,
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -613,11 +625,11 @@ all_group=all_group
 save(all_group,file="all_group.Rdata")
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -631,7 +643,7 @@ for(cycle in 1:length(vector)){
   scores$ID=paste0(vector[cycle])
   all_scores=rbind(all_scores,scores)
 }
-load("C:/Users/赵定康/Desktop/input/all_group.Rdata")
+load("input/all_group.Rdata")
 drawed_data=merge(all_scores,all_group,by.x="row.names",by.y="Tag")
 colnames(drawed_data)[6]="Group"
 library(ggplot2)
@@ -672,7 +684,7 @@ p
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
          "GSE158578_b","GSE188465","GSE188466",
@@ -715,11 +727,11 @@ all_group_v=all_group
 save(all_group_v,file="all_group_v.Rdata")
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -733,7 +745,7 @@ for(cycle in 1:length(vector)){
   scores$ID=paste0(vector[cycle])
   all_scores=rbind(all_scores,scores)
 }
-load("C:/Users/赵定康/Desktop/input/all_group_v.Rdata")
+load("input/all_group_v.Rdata")
 drawed_data=merge(all_scores,all_group_v,by.x="row.names",by.y="Tag")
 colnames(drawed_data)[6]="Group"
 library(ggplot2)
@@ -774,7 +786,7 @@ p
 ################################################################################PPI network####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 library(clusterProfiler)
 activation_inhibition_geneset=read.gmt("wpags_wpigs.gmt")
 colnames(activation_inhibition_geneset)=c("group","gene")
@@ -786,7 +798,7 @@ library(STRINGdb)
 string_db=STRINGdb$new( version="12.0",
                         species=9606,
                         score_threshold=600,
-                        input_directory="C:/Users/赵定康/Desktop/input")
+                        input_directory="input")
 data_frame=data.frame(gene = activation_inhibition_geneset$gene)
 dat_map=string_db$map(my_data_frame=data_frame, 
                       my_data_frame_id_col_names="gene",
@@ -805,7 +817,7 @@ write.csv(activation_inhibition_geneset,'group_PPI.csv',row.names = F,quote = F)
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -832,11 +844,11 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -854,7 +866,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -913,7 +925,7 @@ ggplot(p_data_all, aes(dataset, geneset)) +
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("input")
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
          "GSE158578_b","GSE188465","GSE188466",
@@ -955,11 +967,11 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("functions/Calculate_bioactivity_scores.R")
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -977,7 +989,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
