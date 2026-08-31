@@ -1,16 +1,13 @@
-#Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
-
 # ==============================================================================
 # WntAct5 -- Immunological and stemness analyses
 # ------------------------------------------------------------------------------
-# Purpose:    Link Wnt activity to immune subtypes, MSI status, stemness
-#             signatures, and the tumor microenvironment.
+# Purpose:    Link Wnt activity to immune subtypes, MSI status, stemness signatures, and the tumor microenvironment.
 # Inputs:     Pan-cancer Wnt activity scores and immune/stemness annotations.
 # Outputs:    Immunological and stemness association results.
+# NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.
 # ==============================================================================
 
 
-################################################################################Comparison between different immunological subtypes of TCGA####
 rm(list=ls())
 gc()
 setwd("input")
@@ -54,7 +51,9 @@ p=ggboxplot(immune_exp, x="Subtype_Immune_Model_Based", y="activity_score",
   ggtitle("TCGA") +
   coord_flip()
 p
-################################################################################MSI####
+# ------------------------------------------------------------------------------
+# MSI
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -113,7 +112,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
     plot.title = element_text(size = 16, color = "black")
   ) +
   ggtitle("MSI")
-################################################################################TMB####
+# ------------------------------------------------------------------------------
+# TMB
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(TCGAmutations)
@@ -195,7 +196,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
     plot.title = element_text(size = 16, color = "black")
   ) +
   ggtitle("TMB")
-################################################################################FGA####
+# ------------------------------------------------------------------------------
+# FGA
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -262,7 +265,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
     plot.title = element_text(size = 16, color = "black")
   ) +
   ggtitle("FGA")
-################################################################################mutation count####
+# ------------------------------------------------------------------------------
+# mutation count
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -329,7 +334,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor))) +
     plot.title = element_text(size = 16, color = "black")
   ) +
   ggtitle("Mutation count", subtitle = expression("(log"[2] * "-transformation)"))
-################################################################################Immune gene collation####
+# ------------------------------------------------------------------------------
+# Immune gene collation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -365,7 +372,9 @@ write.gmt=function (gs.list, file) {
 }
 write.gmt(signature_tme_literatures,file="./signature_tme_literatures.gmt")
 write.gmt(cellMarker,file="./cellMarker.gmt")
-################################################################################TCGA immunoinfiltration analysis (literatures)####
+# ------------------------------------------------------------------------------
+# TCGA immunoinfiltration analysis (literatures)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -388,7 +397,9 @@ for(i in 1:length(fs)){
   tme_all_literatures=rbind(tme_all_literatures,im_literatures)
 }
 save(tme_all_literatures,file="tme_all_literatures.Rdata")
-################################################################################TARGET immunoinfiltration analysis (literatures)####
+# ------------------------------------------------------------------------------
+# TARGET immunoinfiltration analysis (literatures)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -408,7 +419,9 @@ for(i in 1:length(fs)){
   TARGET_G_all_literatures=rbind(TARGET_G_all_literatures,im_literatures)
 }
 save(TARGET_G_all_literatures,file="TARGET_G_all_literatures.Rdata")
-################################################################################WNT-immune infiltration correlation analysis####
+# ------------------------------------------------------------------------------
+# WNT-immune infiltration correlation analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(IOBR)
@@ -472,7 +485,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
   )  
-################################################################################TCGA immunoinfiltration analysis (cellmarker)####
+# ------------------------------------------------------------------------------
+# TCGA immunoinfiltration analysis (cellmarker)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -496,7 +511,9 @@ for(i in 1:length(fs)){
   tme_all_cellMarker=rbind(tme_all_cellMarker,im_cellMarker)
 }
 save(tme_all_cellMarker,file="tme_all_cellMarker.Rdata")
-################################################################################TARGET immunoinfiltration analysis (cellmarker)####
+# ------------------------------------------------------------------------------
+# TARGET immunoinfiltration analysis (cellmarker)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -517,7 +534,9 @@ for(i in 1:length(fs)){
   TARGET_all_cellMarker=rbind(TARGET_all_cellMarker,im_cellMarker)
 }
 save(TARGET_all_cellMarker,file="TARGET_all_cellMarker.Rdata")
-################################################################################WNT-immunocellmarker correlation analysis####
+# ------------------------------------------------------------------------------
+# WNT-immunocellmarker correlation analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/tme_all_cellMarker.Rdata")
@@ -580,7 +599,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
   )  
-################################################################################TCGA pan-cancer T-cell status analysis####
+# ------------------------------------------------------------------------------
+# TCGA pan-cancer T-cell status analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(TCellSI)
@@ -603,7 +624,9 @@ for(i in 1:length(fs)){
   tme_all_TCSS=rbind(tme_all_TCSS,im_TCSS)
 }
 save(tme_all_TCSS,file="tme_all_TCSS.Rdata")
-################################################################################TARGET pan-cancer T-cell status analysis####
+# ------------------------------------------------------------------------------
+# TARGET pan-cancer T-cell status analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(TCellSI)
@@ -623,7 +646,9 @@ for(i in 1:length(fs)){
   TARGET_all_TCSS=rbind(TARGET_all_TCSS,im_TCSS)
 }
 save(TARGET_all_TCSS,file="TARGET_all_TCSS.Rdata")
-################################################################################WNT-T cell status correlation analysis####
+# ------------------------------------------------------------------------------
+# WNT-T cell status correlation analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/tme_all_TCSS.Rdata")
@@ -718,7 +743,9 @@ Dotplot2 = Dotplot + theme(legend.position = "bottom",
   guides(fill = guide_colorbar(title.position = "left", title.hjust = 0.5,  
                                barwidth = 15, barheight = 1.5, ticks = TRUE))  
 Dotplot2 
-################################################################################TCGA immuno-infiltration analysis (ESTMATE)####
+# ------------------------------------------------------------------------------
+# TCGA immuno-infiltration analysis (ESTMATE)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -740,7 +767,9 @@ for(i in 1:length(fs)){
   tme_all_estimate=rbind(tme_all_estimate,im_estimate)
 }
 save(tme_all_estimate,file="tme_all_estimate.Rdata")
-################################################################################TARGET immuno-infiltration analysis (ESTMATE)####
+# ------------------------------------------------------------------------------
+# TARGET immuno-infiltration analysis (ESTMATE)
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -759,7 +788,9 @@ for(i in 1:length(fs)){
   TARGET_all_estimate=rbind(TARGET_all_estimate,im_estimate)
 }
 save(TARGET_all_estimate,file="TARGET_all_estimate.Rdata")
-################################################################################ESTIMATE correlation analysis of WNT-immunity####
+# ------------------------------------------------------------------------------
+# ESTIMATE correlation analysis of WNT-immunity
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/tme_all_estimate.Rdata")
@@ -800,7 +831,9 @@ cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "   ",
                         ifelse(cancer_cor$p.value <= 0.05 & cancer_cor$p.value > 0.01, "*  ", 
                                ifelse(cancer_cor$p.value <= 0.01 & cancer_cor$p.value > 0.001, "** ", "***")))
 cancer_cor$cancer=paste0(cancer_cor$pstar,cancer_cor$cancer)
-#####################################Stromal
+# ------------------------------------------------------------------------------
+# Stromal
+# ------------------------------------------------------------------------------
 cancer_all=cancer_cor[cancer_cor$tme=="StromalScore_estimate",]
 cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
 library(ggplot2)
@@ -823,7 +856,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
     axis.text.y = element_text(size = 16, colour = 'black')
   ) +  
   ggtitle("Stromal score")
-#####################################Immune
+# ------------------------------------------------------------------------------
+# Immune
+# ------------------------------------------------------------------------------
 cancer_all=cancer_cor[cancer_cor$tme=="ImmuneScore_estimate",]
 cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
 library(ggplot2)
@@ -844,7 +879,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
     plot.title = element_text(size = 16, color = "black")
   ) +  
   ggtitle("Immune score")
-#####################################Tumor purity
+# ------------------------------------------------------------------------------
+# Tumor purity
+# ------------------------------------------------------------------------------
 cancer_all=cancer_cor[cancer_cor$tme=="TumorPurity_estimate",]
 cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
 library(ggplot2)
@@ -865,7 +902,9 @@ ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
     plot.title = element_text(size = 16, color = "black")
   ) +  
   ggtitle("Tumor purity")
-################################################################################Correlation analysis of WNT-Immunomodulator/Chemokine####
+# ------------------------------------------------------------------------------
+# Correlation analysis of WNT-Immunomodulator/Chemokine
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -934,7 +973,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
   )
-################################################################################Collation of available pan-cancer TIDE data####
+# ------------------------------------------------------------------------------
+# Collation of available pan-cancer TIDE data
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 folder_path = "input/TIDE/Results/Tumor_Dysf_Excl_scores"    
@@ -943,7 +984,9 @@ data_list = lapply(file_names, read.table, header = TRUE)
 tide_all = do.call(rbind, data_list)
 setwd("input")
 save(tide_all,file="tide_all.Rdata")
-################################################################################Correlation analysis of WNT-tide####
+# ------------------------------------------------------------------------------
+# Correlation analysis of WNT-tide
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -1043,7 +1086,9 @@ Dotplot2 = Dotplot + theme(legend.position = "bottom",
   guides(fill = guide_colorbar(title.position = "left", title.hjust = 0.5,  
                                barwidth = 15, barheight = 1.5, ticks = TRUE))  
 Dotplot2 
-################################################################################Calculation of IMvigor's WNT scores####
+# ------------------------------------------------------------------------------
+# Calculation of IMvigor's WNT scores
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -1064,7 +1109,9 @@ WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                                            rep("neg",sum(grepl("WPIGS", names(geneSets))))))
 IMvigor_WNT_score=WNT_Score
 save(IMvigor_WNT_score,file="IMvigor_WNT_score.Rdata")
-################################################################################PDCD1/CD274 correlations####
+# ------------------------------------------------------------------------------
+# PDCD1/CD274 correlations
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor.Rdata")
@@ -1119,7 +1166,9 @@ p2 = ggscatter(wnt_pd, x = "CD274", y = "activity_score",
   xlab("CD274 expression") +
   ylab("Wnt/β-catenin pathway activity score")
 p2
-################################################################################Prognostic analysis####
+# ------------------------------------------------------------------------------
+# Prognostic analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor_WNT_score.Rdata")
@@ -1170,7 +1219,9 @@ p$plot = p$plot +
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
-################################################################################Comparison of desert multi-indicator prognosis####
+# ------------------------------------------------------------------------------
+# Comparison of desert multi-indicator prognosis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1287,7 +1338,9 @@ ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
   geom_hline(yintercept = y_intercept_value, linetype = "dashed", color = "red", size = 0.6) +
   geom_text(aes(x = Inf, y = y_intercept_value, label = round(y_intercept_value, 6)),   
             hjust = 1.2, vjust = -0.5, color = "#f15a22", size = 5)
-################################################################################Immunotherapy 1####
+# ------------------------------------------------------------------------------
+# Immunotherapy 1
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor210CoreBiologies.Rdata")
@@ -1329,7 +1382,9 @@ p = ggboxplot(wnt_IMvigor,
                      size = 4) +  
   ggtitle("IMvigor") 
 p
-################################################################################Immunotherapy 2####
+# ------------------------------------------------------------------------------
+# Immunotherapy 2
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor210CoreBiologies.Rdata")
@@ -1368,7 +1423,9 @@ p = ggboxplot(wnt_IMvigor,
                      size = 4) +  
   ggtitle("IMvigor") 
 p
-################################################################################Immunotherapy 3####
+# ------------------------------------------------------------------------------
+# Immunotherapy 3
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor210CoreBiologies.Rdata")
@@ -1408,7 +1465,9 @@ p = ggboxplot(wnt_IMvigor,
                      size = 4) +  
   ggtitle("IMvigor")   
 p
-################################################################################Immunotherapy 4####
+# ------------------------------------------------------------------------------
+# Immunotherapy 4
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor210CoreBiologies.Rdata")
@@ -1448,7 +1507,9 @@ p = ggboxplot(wnt_IMvigor,
                      size = 4) +  
   ggtitle("IMvigor")
 p
-################################################################################Immunotherapy 5####
+# ------------------------------------------------------------------------------
+# Immunotherapy 5
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor210CoreBiologies.Rdata")
@@ -1488,7 +1549,9 @@ p = ggboxplot(wnt_IMvigor,
                      size = 4) +  
   ggtitle("IMvigor") 
 p
-################################################################################Immunotherapy for different immune phenotypes####
+# ------------------------------------------------------------------------------
+# Immunotherapy for different immune phenotypes
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/IMvigor210CoreBiologies.Rdata")
@@ -1521,7 +1584,9 @@ p = ggplot(wnt_IMvigor, aes(`Immune phenotype`, activity_score, fill = Response,
   stat_compare_means(aes(group = Response, label = ..p.signif..), method = "wilcox.test") +  
   ggtitle("IMvigor") 
 p
-################################################################################Immunotherapy GSE91061####
+# ------------------------------------------------------------------------------
+# Immunotherapy GSE91061
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1646,7 +1711,9 @@ p = ggscatter(WNT, x = "PDCD1", y = "activity_score",
   ylab("Wnt/β-catenin pathway activity score") +  
   theme(legend.position = "none")
 p
-################################################################################Collection of stemness gene sets####
+# ------------------------------------------------------------------------------
+# Collection of stemness gene sets
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(openxlsx)
@@ -1671,7 +1738,9 @@ write.gmt=function (gs.list, file) {
   writeLines(gs.lines, con = file)
 }
 write.gmt(stem,file="input/stemness.gmt")
-################################################################################TCGA pan-cancer stemness analysis####
+# ------------------------------------------------------------------------------
+# TCGA pan-cancer stemness analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1697,7 +1766,9 @@ for(i in 1:length(fs)){
   tme_all_stemness=rbind(tme_all_stemness,im_stemness)
 }
 save(tme_all_stemness,file="tme_all_stemness.Rdata")
-################################################################################TARGET pan-cancer stemness analysis####
+# ------------------------------------------------------------------------------
+# TARGET pan-cancer stemness analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1720,7 +1791,9 @@ for(i in 1:length(fs)){
   TARGET_all_stemness=rbind(TARGET_all_stemness,im_stemness)
 }
 save(TARGET_all_stemness,file="TARGET_all_stemness.Rdata")
-################################################################################Correlation analysis of stemness####
+# ------------------------------------------------------------------------------
+# Correlation analysis of stemness
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/tme_all_stemness.Rdata")
@@ -1780,7 +1853,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
   )  
-################################################################################Joint CELL article on stemness####
+# ------------------------------------------------------------------------------
+# Joint CELL article on stemness
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(readxl)
@@ -1867,7 +1942,9 @@ p=ggplot(WNT, aes(x = cluster, y = `ENHsi`, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
   ggtitle("TCGA-Pancancer")  
 print(p)
-################################################################################Multiple immunotherapy data sets and calculations####
+# ------------------------------------------------------------------------------
+# Multiple immunotherapy data sets and calculations
+# ------------------------------------------------------------------------------
 rm(list = ls())
 gc()
 setwd("input")
@@ -1964,7 +2041,9 @@ for (i in 1:length(datasets)){
   plots[[length(plots) +1]]=p2
 }
 grid.arrange(grobs = plots, ncol =4)
-################################################################################Timer algorithm####
+# ------------------------------------------------------------------------------
+# Timer algorithm
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(IOBR)
@@ -1985,7 +2064,9 @@ for(i in 1:length(fs)){
   tme_all_timer=rbind(tme_all_timer,im_timer)
 }
 save(tme_all_timer,file="tme_all_timer.Rdata")
-################################################################################Visualisation of Timer algorithm results####
+# ------------------------------------------------------------------------------
+# Visualisation of Timer algorithm results
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/tme_all_timer.Rdata")
@@ -2041,7 +2122,9 @@ p = ggplot(all_fs_all, aes(project, activity_score, fill = Group, color = Group)
   #ggtitle(expression(paste("CD8"^"+", " T cell infiltration")))
   ggtitle("Macrophage infiltration")#This can be replaced by
 p
-################################################################################Preparation of lasso regression algorithm####
+# ------------------------------------------------------------------------------
+# Preparation of lasso regression algorithm
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(IOBR)
@@ -2066,7 +2149,9 @@ table(xcell_pheno$phenotype)
 xcell_pheno$phenotype=ifelse(xcell_pheno$phenotype=="inflamed","hot","cold")
 table(xcell_pheno$phenotype)
 save(xcell_pheno,file="xcell_pheno.Rdata")
-################################################################################lasso regression construction####
+# ------------------------------------------------------------------------------
+# lasso regression construction
+# ------------------------------------------------------------------------------
 rm(list = ls())
 gc()
 setwd("input")
@@ -2255,7 +2340,9 @@ selected_vars = rownames(coefs)[which(coefs != 0)][-1]
 cat("=== Selected Variables (n =", length(selected_vars), ") ===\n")
 print(selected_vars)
 save(lasso_model, file = "lasso_model.Rdata")
-################################################################################GSE19423####
+# ------------------------------------------------------------------------------
+# GSE19423
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(dplyr)
