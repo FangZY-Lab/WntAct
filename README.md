@@ -1,9 +1,5 @@
 # WntAct
 
-Code repository for **"Robustly quantifying Wnt/β-catenin pathway activity by
-integrating genomic data: a context-insensitive and directional approach for
-precision oncology"** (Zhao *et al.*, *In Submission*).
-
 ![WntAct overview](https://github.com/user-attachments/assets/216f94f6-23ce-4a21-a294-3a39412a9267)
 
 ## Overview
