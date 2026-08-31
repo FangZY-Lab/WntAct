@@ -1,16 +1,13 @@
-#Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
-
 # ==============================================================================
 # WntAct6 -- Metabolic flux analyses
 # ------------------------------------------------------------------------------
-# Purpose:    Infer metabolic flux (METAFlux) and link Wnt activity to metabolic
-#             reprogramming across cell lines and tumor cohorts.
+# Purpose:    Infer metabolic flux (METAFlux) and link Wnt activity to metabolic reprogramming across cell lines and tumor cohorts.
 # Inputs:     Expression matrices (TCGA, TARGET, GDSC, CCLE, CTRP) and Wnt scores.
 # Outputs:    Metabolic flux scores and pathway-level activity estimates.
+# NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.
 # ==============================================================================
 
 
-################################################################################TCGA####
 rm(list=ls())
 gc()
 library(METAFlux)
@@ -45,7 +42,9 @@ for(i in pathway){
 all_pathway_score=as.data.frame(do.call(rbind,pathway_score))
 TCGA_metabolism=all_pathway_score
 save(TCGA_metabolism,file="TCGA_metabolism.Rdata")
-################################################################################TARGET####
+# ------------------------------------------------------------------------------
+# TARGET
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(METAFlux)
@@ -76,7 +75,9 @@ for(i in pathway){
 all_pathway_score=as.data.frame(do.call(rbind,pathway_score))
 TARGET_metabolism=all_pathway_score
 save(TARGET_metabolism,file="TARGET_metabolism.Rdata")
-################################################################################GDSC1####
+# ------------------------------------------------------------------------------
+# GDSC1
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(METAFlux)
@@ -105,7 +106,9 @@ for(i in pathway){
 all_pathway_score=as.data.frame(do.call(rbind,pathway_score))
 GDSC1_metabolism=all_pathway_score
 save(GDSC1_metabolism,file="GDSC1_metabolism.Rdata")
-################################################################################GDSC2####
+# ------------------------------------------------------------------------------
+# GDSC2
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(METAFlux)
@@ -134,7 +137,9 @@ for(i in pathway){
 all_pathway_score=as.data.frame(do.call(rbind,pathway_score))
 GDSC2_metabolism=all_pathway_score
 save(GDSC2_metabolism,file="GDSC2_metabolism.Rdata")
-################################################################################CTRP####
+# ------------------------------------------------------------------------------
+# CTRP
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(METAFlux)
@@ -164,7 +169,9 @@ for(i in pathway){
 all_pathway_score=as.data.frame(do.call(rbind,pathway_score))
 CTRP_metabolism=all_pathway_score
 save(CTRP_metabolism,file="CTRP_metabolism.Rdata")
-################################################################################CCLE####
+# ------------------------------------------------------------------------------
+# CCLE
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(METAFlux)
@@ -193,7 +200,9 @@ for(i in pathway){
 all_pathway_score=as.data.frame(do.call(rbind,pathway_score))
 CCLE_metabolism=all_pathway_score
 save(CCLE_metabolism,file="CCLE_metabolism.Rdata")
-################################################################################xgboost####
+# ------------------------------------------------------------------------------
+# xgboost
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -292,7 +301,9 @@ impor = as.data.frame(sort(colMeans(abs(shap_xgboost$S)), decreasing = TRUE))
 colnames(impor) = "XGBoost"
 xgboost_impor = impor
 save(xgboost_impor, file = "xgboost_impor.Rdata")
-##############TARGET
+# ------------------------------------------------------------------------------
+# TARGET
+# ------------------------------------------------------------------------------
 load("input/TARGET_metabolism.Rdata")
 load("input/TARGET_WNT_Score.Rdata")
 TARGET=merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
@@ -323,7 +334,9 @@ p=ggscatter(TARGET_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############GDSC1
+# ------------------------------------------------------------------------------
+# GDSC1
+# ------------------------------------------------------------------------------
 load("input/GDSC1_metabolism.Rdata")
 load("input/GDSC1_WNT_score.Rdata")
 GDSC1=merge(GDSC1_WNT_score[,c(1),drop=F], 
@@ -354,7 +367,9 @@ p=ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############GDSC2
+# ------------------------------------------------------------------------------
+# GDSC2
+# ------------------------------------------------------------------------------
 load("input/GDSC2_metabolism.Rdata")
 load("input/GDSC2_WNT_score.Rdata")
 GDSC2=merge(GDSC2_WNT_score[,c(1),drop=F], 
@@ -385,7 +400,9 @@ p=ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############CCLE
+# ------------------------------------------------------------------------------
+# CCLE
+# ------------------------------------------------------------------------------
 load("input/CCLE_metabolism.Rdata")
 load("input/CCLE_WNT_score.Rdata")
 CCLE=merge(CCLE_WNT_score[,c(1),drop=F], 
@@ -416,7 +433,9 @@ p=ggscatter(CCLE_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############CTRP
+# ------------------------------------------------------------------------------
+# CTRP
+# ------------------------------------------------------------------------------
 load("input/CTRP_metabolism.Rdata")
 load("input/CTRP_WNT_score.Rdata")
 CTRP=merge(CTRP_WNT_score[,c(1),drop=F], 
@@ -449,7 +468,9 @@ p=ggscatter(CTRP_pred, x = "pred", y = "activity_score",
 print(p)
 xgboost_fit=fit
 save(xgboost_fit,file="xgboost_fit.Rdata")
-################################################################################lightgbm####
+# ------------------------------------------------------------------------------
+# lightgbm
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -601,7 +622,9 @@ p = ggscatter(TARGET_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-#################GDSC1
+# ------------------------------------------------------------------------------
+# GDSC1
+# ------------------------------------------------------------------------------
 load("GDSC1_metabolism.Rdata")
 load("GDSC1_WNT_score.Rdata")
 GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F], 
@@ -634,7 +657,9 @@ p = ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-#################GDSC2
+# ------------------------------------------------------------------------------
+# GDSC2
+# ------------------------------------------------------------------------------
 load("GDSC2_metabolism.Rdata")
 load("GDSC2_WNT_score.Rdata")
 GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F], 
@@ -667,7 +692,9 @@ p = ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-#################CCLE
+# ------------------------------------------------------------------------------
+# CCLE
+# ------------------------------------------------------------------------------
 load("CCLE_metabolism.Rdata")
 load("CCLE_WNT_score.Rdata")
 CCLE = merge(CCLE_WNT_score[,c(1),drop=F], 
@@ -700,7 +727,9 @@ p = ggscatter(CCLE_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-#################CTRP
+# ------------------------------------------------------------------------------
+# CTRP
+# ------------------------------------------------------------------------------
 load("CTRP_metabolism.Rdata")
 load("CTRP_WNT_score.Rdata")
 CTRP = merge(CTRP_WNT_score[,c(1),drop=F], 
@@ -735,7 +764,9 @@ p = ggscatter(CTRP_pred, x = "pred", y = "activity_score",
 print(p)
 lightgbm_fit=fit
 save(lightgbm_fit,file="lightgbm_fit.Rdata")
-################################################################################rf####
+# ------------------------------------------------------------------------------
+# rf
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -826,7 +857,9 @@ impor = as.data.frame(sort(colMeans(abs(shap_rf$S)), decreasing = TRUE))
 colnames(impor) = "RF"
 rf_impor = impor
 save(rf_impor, file = "rf_impor.Rdata")
-################TARGET
+# ------------------------------------------------------------------------------
+# TARGET
+# ------------------------------------------------------------------------------
 load("TARGET_metabolism.Rdata")
 load("TARGET_WNT_Score.Rdata")
 TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
@@ -857,7 +890,9 @@ p = ggscatter(TARGET_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-################GDSC1
+# ------------------------------------------------------------------------------
+# GDSC1
+# ------------------------------------------------------------------------------
 load("GDSC1_metabolism.Rdata")
 load("GDSC1_WNT_score.Rdata")
 GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F], 
@@ -888,7 +923,9 @@ p = ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-################GDSC2
+# ------------------------------------------------------------------------------
+# GDSC2
+# ------------------------------------------------------------------------------
 load("GDSC2_metabolism.Rdata")
 load("GDSC2_WNT_score.Rdata")
 GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F], 
@@ -919,7 +956,9 @@ p = ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-################CCLE
+# ------------------------------------------------------------------------------
+# CCLE
+# ------------------------------------------------------------------------------
 load("CCLE_metabolism.Rdata")
 load("CCLE_WNT_score.Rdata")
 CCLE = merge(CCLE_WNT_score[,c(1),drop=F], 
@@ -950,7 +989,9 @@ p = ggscatter(CCLE_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-################CTRP
+# ------------------------------------------------------------------------------
+# CTRP
+# ------------------------------------------------------------------------------
 load("CTRP_metabolism.Rdata")
 load("CTRP_WNT_score.Rdata")
 CTRP = merge(CTRP_WNT_score[,c(1),drop=F], 
@@ -983,7 +1024,9 @@ p = ggscatter(CTRP_pred, x = "pred", y = "activity_score",
 print(p)
 rf_fit=fit
 save(rf_fit,file="rf_fit.Rdata")
-################################################################################catboost####
+# ------------------------------------------------------------------------------
+# catboost
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -1109,7 +1152,9 @@ impor = as.data.frame(sort(colMeans(abs(shp$S)), decreasing = TRUE))
 colnames(impor) = "CatBoost"
 catboost_impor = impor
 save(catboost_impor, file = "catboost_impor.Rdata")
-##############TARGET
+# ------------------------------------------------------------------------------
+# TARGET
+# ------------------------------------------------------------------------------
 load("TARGET_metabolism.Rdata")
 load("TARGET_WNT_Score.Rdata")
 TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
@@ -1141,7 +1186,9 @@ p = ggscatter(TARGET_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############GDSC1
+# ------------------------------------------------------------------------------
+# GDSC1
+# ------------------------------------------------------------------------------
 load("GDSC1_metabolism.Rdata")
 load("GDSC1_WNT_score.Rdata")
 GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F], 
@@ -1173,7 +1220,9 @@ p = ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############GDSC2
+# ------------------------------------------------------------------------------
+# GDSC2
+# ------------------------------------------------------------------------------
 load("GDSC2_metabolism.Rdata")
 load("GDSC2_WNT_score.Rdata")
 GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F], 
@@ -1205,7 +1254,9 @@ p = ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############CCLE
+# ------------------------------------------------------------------------------
+# CCLE
+# ------------------------------------------------------------------------------
 load("CCLE_metabolism.Rdata")
 load("CCLE_WNT_score.Rdata")
 CCLE = merge(CCLE_WNT_score[,c(1),drop=F], 
@@ -1237,7 +1288,9 @@ p = ggscatter(CCLE_pred, x = "pred", y = "activity_score",
   xlab("Model prediction score") +
   ylab("Wnt/β-catenin pathway activity score")
 print(p)
-##############CTRP
+# ------------------------------------------------------------------------------
+# CTRP
+# ------------------------------------------------------------------------------
 load("CTRP_metabolism.Rdata")
 load("CTRP_WNT_score.Rdata")
 CTRP = merge(CTRP_WNT_score[,c(1),drop=F], 
@@ -1271,7 +1324,9 @@ p = ggscatter(CTRP_pred, x = "pred", y = "activity_score",
 print(p)
 catboost_fit=fit
 save(catboost_fit,file="catboost_fit.Rdata")
-################################################################################visualisation####
+# ------------------------------------------------------------------------------
+# visualisation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
