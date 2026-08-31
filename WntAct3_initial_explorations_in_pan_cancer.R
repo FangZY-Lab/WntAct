@@ -1,16 +1,13 @@
-#Note: Part of the code involves the core interests of the laboratory, not open source for the time being.
-
 # ==============================================================================
 # WntAct3 -- Initial pan-cancer explorations
 # ------------------------------------------------------------------------------
-# Purpose:    Compute Wnt activity scores across TCGA and TARGET pan-cancer
-#             atlases and perform initial cross-cancer comparisons.
+# Purpose:    Compute Wnt activity scores across TCGA and TARGET pan-cancer atlases and perform initial cross-cancer comparisons.
 # Inputs:     Pan-cancer expression matrices (TCGA / TARGET) and annotations.
 # Outputs:    Pan-cancer Wnt activity score objects.
+# NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.
 # ==============================================================================
 
 
-################################################################################Calculation of TCGA pan-cancer WNT score####
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -30,7 +27,9 @@ WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                                            rep("neg",sum(grepl("WPIGS", names(geneSets))))))
 pancancer_WNT_Score=WNT_Score
 save(pancancer_WNT_Score,file="pancancer_WNT_Score.Rdata")
-################################################################################TARGET pan-cancer WNT score calculation####
+# ------------------------------------------------------------------------------
+# TARGET pan-cancer WNT score calculation
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -50,7 +49,9 @@ WNT_Score=Calculate_bioactivity_scores(file_paths="input",
                                                            rep("neg",sum(grepl("WPIGS", names(geneSets))))))
 TARGET_WNT_Score=WNT_Score
 save(TARGET_WNT_Score,file="TARGET_WNT_Score.Rdata")
-################################################################################Comparison of TCGA pan-cancer WNT scores####
+# ------------------------------------------------------------------------------
+# Comparison of TCGA pan-cancer WNT scores
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(stringr)
@@ -81,7 +82,9 @@ p = ggplot(WNT_Score_group, aes(Project, activity_score, fill = Group, color = G
   scale_fill_manual(values = c("#90d7ec", "#f58f98")) +  
   stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
 p
-################################################################################Comparison of TARGET pan-cancer WNT scores####
+# ------------------------------------------------------------------------------
+# Comparison of TARGET pan-cancer WNT scores
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(stringr)
@@ -112,7 +115,9 @@ p = ggplot(WNT_Score_group, aes(Project, activity_score, fill = Group, color = G
   scale_fill_manual(values = c("#90d7ec", "#f58f98")) +  
   stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
 p
-################################################################################Matching comparison of TCGA-TARGET pan-cancer WNT scores####
+# ------------------------------------------------------------------------------
+# Matching comparison of TCGA-TARGET pan-cancer WNT scores
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(stringr)
@@ -190,7 +195,9 @@ p = ggplot(pairs_data, aes(x = type, y = activity_score, fill = type)) +
   theme_bw() + mytheme +  
   ggtitle("TCGA+TARGET") 
 p
-################################################################################Changes in Wnt-related genes####
+# ------------------------------------------------------------------------------
+# Changes in Wnt-related genes
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -259,7 +266,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
   )  
-################################################################################Characterised gene validation gene set####
+# ------------------------------------------------------------------------------
+# Characterised gene validation gene set
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -398,7 +407,9 @@ Heatmap(fgsea_all_transposed,
         rect_gp = gpar(col = "#77787b", lwd = 1) 
 )
 grid.text("AXIN2", x = 0.1, y = unit(0.97, "npc"), gp = gpar(fontsize = 16, fontface = "bold"))#Location of replacement genes
-################################################################################Validation of gene sets in pan-cancer####
+# ------------------------------------------------------------------------------
+# Validation of gene sets in pan-cancer
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -535,7 +546,9 @@ Heatmap(fgsea_all_transposed,
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text("", x = 0.2, y = unit(0.99, "npc"), gp = gpar(fontsize = 12, fontface = "bold")) 
-################################################################################TCGA hallmark ssGSEA####
+# ------------------------------------------------------------------------------
+# TCGA hallmark ssGSEA
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -561,7 +574,9 @@ for(i in 1:length(fs)){
   tme_all_hallmarker=rbind(tme_all_hallmarker,im_hallmarker)
 }
 save(tme_all_hallmarker,file="tme_all_hallmarker.Rdata")
-################################################################################TARGET hallmark ssGSEA####
+# ------------------------------------------------------------------------------
+# TARGET hallmark ssGSEA
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input")
@@ -584,7 +599,9 @@ for(i in 1:length(fs)){
   TARGET_all_hallmarker=rbind(TARGET_all_hallmarker,im_hallmarker)
 }
 save(TARGET_all_hallmarker,file="TARGET_all_hallmarker.Rdata")
-################################################################################Hallmark correlation analysis####
+# ------------------------------------------------------------------------------
+# Hallmark correlation analysis
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/tme_all_hallmarker.Rdata")
@@ -644,7 +661,9 @@ ggplot(cancer_cor, aes(cancer, tme)) +
     legend.text = element_text(size = 16), 
     legend.title = element_text(size = 16)
   )  
-################################################################################TCGA pan-cancer pos vs. neg####
+# ------------------------------------------------------------------------------
+# TCGA pan-cancer pos vs. neg
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/pancancer_WNT_Score.Rdata")
@@ -701,7 +720,9 @@ p = ggplot(wnt_group, aes(Project, value, fill = Group, color = Group)) +
   scale_fill_manual(values = c("#f58f98", "#90d7ec")) +  
   stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
 p
-################################################################################TARGET pan-cancer pos vs neg####
+# ------------------------------------------------------------------------------
+# TARGET pan-cancer pos vs neg
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 load("input/TARGET_WNT_Score.Rdata")
@@ -758,7 +779,9 @@ p = ggplot(wnt_group, aes(Project, value, fill = Group, color = Group)) +
   scale_fill_manual(values = c("#f58f98", "#90d7ec")) +  
   stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
 p
-################################################################################Calculation of WNT scores for GTEx####
+# ------------------------------------------------------------------------------
+# Calculation of WNT scores for GTEx
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -808,7 +831,9 @@ p = ggplot(WNT_Score_tissue, aes(x = primary_site, y = activity_score, fill = pr
   ) +   
   ggtitle("GTEx")  
 p
-################################################################################Validation of gene sets in GTEx####
+# ------------------------------------------------------------------------------
+# Validation of gene sets in GTEx
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -937,7 +962,9 @@ Heatmap(fgsea_all_transposed,
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold")) 
-################################################################################Calculation of WNT scores for the CCLE####
+# ------------------------------------------------------------------------------
+# Calculation of WNT scores for the CCLE
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -990,7 +1017,9 @@ p = ggplot(CCLE_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
   ) +   
   ggtitle("CCLE")  
 p
-################################################################################Validation of gene sets in CCLE####
+# ------------------------------------------------------------------------------
+# Validation of gene sets in CCLE
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -1123,7 +1152,9 @@ Heatmap(fgsea_all_transposed,
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
-################################################################################Calculation of WNT scores for GDSC version 1####
+# ------------------------------------------------------------------------------
+# Calculation of WNT scores for GDSC version 1
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -1191,7 +1222,9 @@ p = ggplot(GDSC1_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
   ) +   
   ggtitle("GDSC Version1")  
 p
-################################################################################Validation of gene sets in GDSC version1####
+# ------------------------------------------------------------------------------
+# Validation of gene sets in GDSC version1
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -1339,7 +1372,9 @@ Heatmap(fgsea_all_transposed,
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
-################################################################################Calculation of WNT scores for GDSC version 2####
+# ------------------------------------------------------------------------------
+# Calculation of WNT scores for GDSC version 2
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(GSEABase)
@@ -1406,7 +1441,9 @@ p = ggplot(GDSC2_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
   ) +   
   ggtitle("GDSC Version2")  
 p
-################################################################################Validation of gene sets in GDSC version2####
+# ------------------------------------------------------------------------------
+# Validation of gene sets in GDSC version2
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
@@ -1554,7 +1591,9 @@ Heatmap(fgsea_all_transposed,
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
-################################################################################Calculation of WNT scores for CTRP####
+# ------------------------------------------------------------------------------
+# Calculation of WNT scores for CTRP
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 setwd("input/")
@@ -1606,7 +1645,9 @@ p = ggplot(CTRP_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
   ) +   
   ggtitle("CTRP")  
 p
-################################################################################Validation of gene sets in CTRP####
+# ------------------------------------------------------------------------------
+# Validation of gene sets in CTRP
+# ------------------------------------------------------------------------------
 rm(list=ls())
 gc()
 library(limma)
